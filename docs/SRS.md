@@ -4,6 +4,8 @@
 |---------|----------------|---------|----------------|
 | v0.2    | March 29, 2026 | Hassan  | Initial draft. All TBDs open. |
 | v0.3    | March 31, 2026 | Hassan  | All TBDs resolved. Supabase + magic link auth added to scope. Database schema defined. Reviewer privacy enforced via RLS. |
+| v0.4        | April 2, 2026 | Hassan  | Spoken sessions added to MVP scope. |
+| v0.4(patch) | April 2, 2026 | Hassan  | Acoustic metrics added to spoken sessions. |
 
 ## 1. Introduction
 
@@ -15,7 +17,7 @@ This SRS is intended for the development team, project stakeholders, potential c
 **[TBD-1 — RESOLVED]**
 
 ### 1.2 Scope
-Situo is a platform that combines AI and human feedback for learning communication and public speaking skills through situated learning theory. The system includes onboarding, personalized study plans, content curation, practice sessions, AI feedback, optional human review, and progression tracking. The MVP focuses on written responses only, with voice and video explicitly out of scope.
+Situo is a platform that combines AI and human feedback for learning communication and public speaking skills through situated learning theory. The system includes onboarding, personalized study plans, content curation, practice sessions, AI feedback, optional human review, and progression tracking. MVP supports two practice formats: written responses (150–300 words) and spoken responses (60–90 second audio recordings). Video recording remains explicitly out of scope.
 
 The system will include:
 - User onboarding with focus areas and context selection
@@ -28,7 +30,6 @@ The system will include:
 
 Out of scope for MVP:
 - Mobile app
-- Voice recording
 - Video recording and review
 - Algorithmic content discovery
 - Language learning
@@ -142,11 +143,37 @@ When the SPARK step completes, the system shall execute the LEARN step by delive
 
 When the LEARN step completes, the system shall execute the PRACTICE step by presenting a writing prompt tied to the content piece and lesson concept, accepting a 150-300 word written response.
 
+When the session type is written, the system shall present a textarea accepting 150–300 word responses.
+
+When the session type is spoken, the system shall present an audio recorder using the browser MediaRecorder API accepting 60–90 second recordings.
+
+Session type is determined by the study plan based on the user's selected focus areas:
+- Tone & vocal variety → spoken
+- Handling nervousness → spoken
+- All other focus areas → written
+- Mixed focus areas → study plan alternates types by stage
+
+#### 3.1.4 AI Feedback
 When the user submits their practice response, the system shall execute the AI FEEDBACK step by evaluating clarity, structure, conciseness, and relevance, explicitly flagging unassessable elements, and suggesting human review value.
+
+When the submission is spoken, the system shall:
+1. Send audio to POST /api/transcribe (Groq Whisper)
+2. Return transcript to user for reference
+3. Run AI feedback on transcript content only
+4. Explicitly flag all delivery elements (tone, pace, nervousness, presence) as requiring human review
+5. Display a prominent notice that human review is strongly recommended for spoken sessions
+
+When the submission is spoken, the system shall also call POST /api/analyze-audio (AssemblyAI) to retrieve objective acoustic metrics:
+- Speaking pace (words per minute)
+- Talk time (seconds of speech vs total duration)
+- Filler word detection (word, count, position)
+- Pause detection (count, duration, timestamp)
+
+These metrics are displayed as objective measurements only. No confidence, nervousness, or emotional assessments are derived from acoustic data. All interpretation is explicitly deferred to human reviewers in the UI.
 
 When AI feedback is delivered, the system shall allow the user to optionally request human review.
 
-#### 3.1.4 Human Review System
+#### 3.1.5 Human Review System
 When a user requests human review, the system shall queue the request for reviewer assignment.
 
 When a reviewer (Tier 1 or 2) is assigned, the system shall provide only: the submission, lesson context, user's stated goal, and structured review form.
@@ -159,7 +186,7 @@ When a review request receives no reviewer response within 48 hours, the system 
 
 **[TBD-5 — RESOLVED]**
 
-#### 3.1.5 Progression and Confidence Scoring
+#### 3.1.6 Progression and Confidence Scoring
 When sessions are completed, the system shall calculate confidence score using weighted formula: 40% AI assessment, 40% human reviewer ratings (when available), 20% consistency.
 
 When no human reviews are received, the system shall redistribute weights to 60% AI assessment, 40% consistency.
@@ -191,7 +218,7 @@ When a new goal is selected, the system shall generate a new 5-stage study plan.
 
 The shareable dashboard shall be private by default. The user must explicitly choose to generate and share the public URL. No dashboard URL shall be accessible without deliberate user action.
 
-#### 3.1.6 Reviewer Management
+#### 3.1.7 Reviewer Management
 When a user completes their first full goal cycle, the system shall invite them to become a Tier 1 Peer Reviewer.
 
 When a Tier 1 reviewer maintains below 3.5 star average rating, the system shall suspend their review privileges.
@@ -260,6 +287,7 @@ The system shall provide a web-based interface with the following components:
 - ProgressBar.jsx (stage progress)
 - ContinuityCard.jsx (goal transition)
 - ShareableDashboard.jsx (completion stats)
+- AudioRecorder.jsx (spoken practice recording)
 
 Sidebar.jsx shall display:
 - Current goal name and stage progress (1-5)
@@ -275,6 +303,10 @@ The system shall run on standard web browsers with internet connectivity.
 - Backend: Python FastAPI with Groq API integration
 - Storage: Browser localStorage
 - Version Control: Git/GitHub
+
+POST /api/transcribe — receives audio file, calls Groq Whisper, returns transcript text. Transcript is then processed by existing /api/chat feedback endpoint.
+
+POST /api/analyze-audio — receives audio file, calls AssemblyAI transcription + audio intelligence, returns acoustic metrics JSON including pace, talk time, filler words, and pause data.
 
 #### 3.3.4 Communication Interfaces
 The system shall communicate with Groq API via HTTPS for AI functionality.
@@ -297,6 +329,11 @@ The system uses Supabase (PostgreSQL). The following tables are required:
 
 Full schema definition is maintained separately in docs/schema.sql.
 
+Supabase Storage bucket: audio-submissions
+- RLS: users access own audio only
+- Reviewers access audio linked to assigned review_request only
+- Audio auto-expires after 90 days
+
 ### 4.2 Performance Requirements
 The application shall load initial content within 3 seconds on standard broadband connections.
 
@@ -315,7 +352,6 @@ The interface shall be responsive and work on desktop screen sizes (Chrome, late
 ### 4.5 Future Scope
 The following features are explicitly out of scope for MVP but may be considered for future development:
 - Mobile app
-- Voice recording
 - Video recording and review
 - Algorithmic content discovery
 - Language learning
@@ -324,6 +360,7 @@ The following features are explicitly out of scope for MVP but may be considered
 - XP/streaks
 - Push notifications
 - Email notifications
+- Visual/nonverbal sessions (video recording) — requires validated human review system and is explicitly post-MVP.
 
 ### 4.6 Success Metrics
 The first milestone shall be 10 users who return for a second session without being asked by the founder.

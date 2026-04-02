@@ -7,10 +7,23 @@ export default {
   theme: {
     extend: {
       colors: {
+        terracotta: '#C2624A',
+        'terracotta-dim': 'rgba(194,98,74,0.1)',
+        'terracotta-border': 'rgba(194,98,74,0.22)',
+        'amber-score': '#C9912A',
+        's-bg': '#110D0B',
+        's-1': '#1C1410',
+        's-2': '#241912',
+        's-border': '#2A1E16',
+        's-border-2': '#3D2820',
         accent: '#c8f135',
         surface: '#111111',
         card: '#1a1a1a',
         border: '#2a2a2a',
+      },
+      fontFamily: {
+        serif: ['Lora', 'Newsreader', 'serif'],
+        sans: ['DM Sans', 'Manrope', 'sans-serif'],
       },
       keyframes: {
         fadeIn: {
