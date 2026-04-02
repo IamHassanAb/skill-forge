@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -16,6 +17,15 @@ export default {
         's-2': '#241912',
         's-border': '#2A1E16',
         's-border-2': '#3D2820',
+        'light-bg':      '#FAF6F1',
+        'light-s1':      '#F2EBE3',
+        'light-s2':      '#EDE4D8',
+        'light-border':  '#DDD0C4',
+        'light-border2': '#C8B8A8',
+        'light-t1':      '#2A1E16',
+        'light-t2':      '#5A3828',
+        'light-t3':      '#8C7060',
+        'light-t4':      '#A89880',
         accent: '#c8f135',
         surface: '#111111',
         card: '#1a1a1a',

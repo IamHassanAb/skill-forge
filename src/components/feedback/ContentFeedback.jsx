@@ -6,11 +6,11 @@ const ContentFeedback = ({ categories }) => {
       {categories.map((cat) => (
         <div
           key={cat.name}
-          className="bg-[#231f1c] border border-[#2A1E16] rounded-xl p-6"
+          className="bg-[var(--s2)] border border-[var(--border)] rounded-xl p-6"
         >
           {/* Header */}
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] uppercase tracking-[0.08em] text-stone-500 font-semibold">
+            <span className="text-[10px] uppercase tracking-[0.08em] text-[var(--t3)] font-semibold">
               {cat.name}
             </span>
             <span className="text-xs text-terracotta font-bold">
@@ -24,14 +24,14 @@ const ContentFeedback = ({ categories }) => {
               <div
                 key={i}
                 className={`w-1 h-1 rounded-full ${
-                  i < cat.score ? 'bg-terracotta' : 'bg-[#393431]'
+                  i < cat.score ? 'bg-terracotta' : 'bg-[var(--border2)]'
                 }`}
               />
             ))}
           </div>
 
           {/* Note */}
-          <p className="text-xs text-stone-400 leading-relaxed font-light mt-2">
+          <p className="text-xs text-[var(--t3)] leading-relaxed font-light mt-2">
             {cat.note}
           </p>
         </div>

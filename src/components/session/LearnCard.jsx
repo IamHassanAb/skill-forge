@@ -11,7 +11,7 @@ const highlightTerms = (text, keyTerms) => {
     const isKey = keyTerms.some((t) => t.toLowerCase() === part.toLowerCase());
     if (isKey) {
       return (
-        <span key={i} className="text-stone-100 font-semibold border-b border-terracotta/30">
+        <span key={i} className="text-[var(--t1)] font-semibold border-b border-terracotta/30">
           {part}
         </span>
       );
@@ -22,17 +22,17 @@ const highlightTerms = (text, keyTerms) => {
 
 const LearnCard = ({ lessonText, keyTerms }) => {
   return (
-    <div className="bg-[#1C1410] border border-[#2A1E16] rounded-2xl p-5">
+    <div className="bg-[var(--s1)] border border-[var(--border)] rounded-2xl p-5">
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-5">
-        <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-stone-500 flex-shrink-0">
+        <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-[var(--t3)] flex-shrink-0">
           LEARN
         </span>
         <div className="h-px flex-1 bg-[#2A1E16]" />
       </div>
 
       {/* BODY */}
-      <p className="font-sans text-lg text-stone-300 leading-relaxed font-light">
+      <p className="font-sans text-lg text-[var(--t2)] leading-relaxed font-light">
         {highlightTerms(lessonText, keyTerms)}
       </p>
     </div>

@@ -2,8 +2,8 @@ import React from 'react';
 
 const StepLoading = () => {
   return (
-    <div className="min-h-screen bg-[#110D0B] flex items-center justify-center px-4">
-      <div className="w-full max-w-2xl bg-[#231f1c] rounded-3xl p-8 md:p-12 flex flex-col items-center">
+    <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center px-4">
+      <div className="w-full max-w-2xl bg-[var(--s2)] rounded-3xl p-8 md:p-12 flex flex-col items-center">
         {/* PROGRESS BARS */}
         <div className="flex gap-2 w-32 mb-14">
           <div className="flex-1 h-1 rounded-full bg-terracotta" />
@@ -18,12 +18,12 @@ const StepLoading = () => {
         </div>
 
         {/* HEADING */}
-        <h1 className="font-serif text-3xl md:text-4xl text-stone-100 font-medium text-center mb-4">
+        <h1 className="font-serif text-3xl md:text-4xl text-[var(--t1)] font-medium text-center mb-4">
           Building your plan…
         </h1>
 
         {/* SUBTEXT */}
-        <p className="text-stone-500 text-sm max-w-xs mx-auto text-center mb-8">
+        <p className="text-[var(--t3)] text-sm max-w-xs mx-auto text-center mb-8">
           Personalising your 5-stage study plan based on your focus areas.
         </p>
 

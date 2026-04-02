@@ -21,39 +21,39 @@ const FeedbackLayout = ({
     <div className="pb-32">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 mb-8">
-        <span className="text-[10px] uppercase tracking-[0.12em] text-stone-500 font-bold">
+        <span className="text-[10px] uppercase tracking-[0.12em] text-[var(--t3)] font-bold">
           AI FEEDBACK
         </span>
-        <span className="text-stone-600 text-xs">·</span>
-        <span className="text-[10px] text-stone-600">{breadcrumb}</span>
+        <span className="text-[var(--t4)] text-xs">·</span>
+        <span className="text-[10px] text-[var(--t4)]">{breadcrumb}</span>
       </div>
 
       <div className="space-y-6">
         {/* Submission card */}
         {isSpoken ? (
-          <div className="bg-[#1C1410] border border-[#2A1E16] rounded-xl p-6">
+          <div className="bg-[var(--s1)] border border-[var(--border)] rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-[10px] uppercase tracking-[0.08em] text-stone-500 font-semibold">
+              <span className="text-[10px] uppercase tracking-[0.08em] text-[var(--t3)] font-semibold">
                 YOUR RECORDING
               </span>
               {audioDuration && (
-                <span className="text-xs text-stone-500 tabular-nums">
+                <span className="text-xs text-[var(--t3)] tabular-nums">
                   {audioDuration}
                 </span>
               )}
             </div>
-            <p className="font-serif italic text-stone-400 text-sm leading-relaxed">
+            <p className="font-serif italic text-[var(--t3)] text-sm leading-relaxed">
               {audioTranscript}
             </p>
           </div>
         ) : (
-          <div className="bg-[#1C1410] border border-[#2A1E16] rounded-xl p-6">
+          <div className="bg-[var(--s1)] border border-[var(--border)] rounded-xl p-6">
             <div className="mb-4">
-              <span className="text-[10px] uppercase tracking-[0.08em] text-stone-500 font-semibold">
+              <span className="text-[10px] uppercase tracking-[0.08em] text-[var(--t3)] font-semibold">
                 YOUR RESPONSE
               </span>
             </div>
-            <p className="font-sans text-stone-400 text-sm leading-relaxed">
+            <p className="font-sans text-[var(--t3)] text-sm leading-relaxed">
               {submission}
             </p>
           </div>

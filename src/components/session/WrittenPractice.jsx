@@ -7,17 +7,17 @@ const WrittenPractice = ({ prompt, onSubmit, isLoading }) => {
   const canSubmit = !isLoading && text.trim() !== '';
 
   return (
-    <div className="bg-[#1C1410] border border-[#2A1E16] rounded-2xl p-6 md:p-10">
+    <div className="bg-[var(--s1)] border border-[var(--border)] rounded-2xl p-6 md:p-10">
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-6">
-        <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-stone-500 flex-shrink-0">
+        <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-[var(--t3)] flex-shrink-0">
           PRACTICE
         </span>
         <div className="h-px flex-1 bg-[#2A1E16]" />
       </div>
 
       {/* PROMPT */}
-      <p className="font-serif text-2xl md:text-3xl text-stone-100 leading-snug mb-6">
+      <p className="font-serif text-2xl md:text-3xl text-[var(--t1)] leading-snug mb-6">
         {prompt}
       </p>
 
@@ -26,12 +26,12 @@ const WrittenPractice = ({ prompt, onSubmit, isLoading }) => {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Write your response here…"
-        className="w-full h-48 bg-[#241912] border-none rounded-xl text-stone-200 placeholder:text-stone-600 focus:ring-1 focus:ring-terracotta/20 transition-all p-6 text-base leading-relaxed resize-none outline-none"
+        className="w-full h-48 bg-[var(--s2)] border-none rounded-xl text-[var(--t1)] placeholder:text-[var(--t4)] focus:ring-1 focus:ring-terracotta/20 transition-all p-6 text-base leading-relaxed resize-none outline-none"
       />
 
       {/* FOOTER */}
       <div className="flex justify-between items-center mt-3">
-        <span className="text-stone-600 text-xs font-medium tabular-nums">
+        <span className="text-[var(--t4)] text-xs font-medium tabular-nums">
           {wordCount} / 150–300 words
         </span>
 

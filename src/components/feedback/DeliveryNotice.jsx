@@ -19,14 +19,14 @@ const DeliveryNotice = () => {
       </div>
 
       {/* Body */}
-      <p className="text-stone-400 text-sm leading-relaxed mb-4">
+      <p className="text-[var(--t3)] text-sm leading-relaxed mb-4">
         AI assessed your words from the transcript. These elements can only be heard — not read:
       </p>
 
       {/* Items */}
       <div className="space-y-2">
         {DELIVERY_ITEMS.map((item) => (
-          <div key={item} className="flex items-center gap-3 text-sm text-stone-400">
+          <div key={item} className="flex items-center gap-3 text-sm text-[var(--t3)]">
             <span className="text-[#C9912A]/60 text-xs">○</span>
             <span>{item}</span>
           </div>

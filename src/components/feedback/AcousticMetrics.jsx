@@ -27,10 +27,10 @@ const AcousticMetrics = ({ pace, talkTime, totalTime = 90, fillerWords, pauses }
     <div className="space-y-4">
       {/* Section label */}
       <div>
-        <div className="text-[10px] uppercase tracking-[0.2em] text-stone-500 font-bold mb-1">
+        <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--t3)] font-bold mb-1">
           ACOUSTIC MEASUREMENTS
         </div>
-        <div className="text-[9px] text-stone-600">
+        <div className="text-[9px] text-[var(--t4)]">
           via AssemblyAI · objective data only
         </div>
       </div>
@@ -38,18 +38,18 @@ const AcousticMetrics = ({ pace, talkTime, totalTime = 90, fillerWords, pauses }
       {/* Two-card grid */}
       <div className="grid grid-cols-2 gap-3">
         {/* PACE CARD */}
-        <div className="bg-[#231f1c] border border-[#2A1E16] rounded-xl p-6">
+        <div className="bg-[var(--s2)] border border-[var(--border)] rounded-xl p-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] uppercase tracking-[0.08em] text-stone-500 font-semibold">
+            <span className="text-[10px] uppercase tracking-[0.08em] text-[var(--t3)] font-semibold">
               SPEAKING PACE
             </span>
             <Badge label={pace > 160 ? 'Fast' : 'Good'} variant={pace > 160 ? 'amber' : 'terracotta'} />
           </div>
-          <div className="text-3xl font-light text-stone-100 tabular-nums mb-3">
-            {pace} <span className="text-sm text-stone-500">wpm</span>
+          <div className="text-3xl font-light text-[var(--t1)] tabular-nums mb-3">
+            {pace} <span className="text-sm text-[var(--t3)]">wpm</span>
           </div>
           {/* Progress track */}
-          <div className="relative h-1.5 bg-[#393431] rounded-full mb-2 overflow-hidden">
+          <div className="relative h-1.5 bg-[var(--border2)] rounded-full mb-2 overflow-hidden">
             <div
               className={`absolute top-0 left-0 h-full rounded-full ${pace > 160 ? 'bg-[#C9912A]' : 'bg-terracotta'}`}
               style={{ width: `${Math.min((pace / 200) * 100, 100)}%` }}
@@ -60,39 +60,39 @@ const AcousticMetrics = ({ pace, talkTime, totalTime = 90, fillerWords, pauses }
               style={{ left: '60%', width: '20%' }}
             />
           </div>
-          <p className="text-[11px] text-stone-500 font-light">
+          <p className="text-[11px] text-[var(--t3)] font-light">
             Comfortable range is 120–160 wpm.
           </p>
         </div>
 
         {/* TALK TIME CARD */}
-        <div className="bg-[#231f1c] border border-[#2A1E16] rounded-xl p-6">
+        <div className="bg-[var(--s2)] border border-[var(--border)] rounded-xl p-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] uppercase tracking-[0.08em] text-stone-500 font-semibold">
+            <span className="text-[10px] uppercase tracking-[0.08em] text-[var(--t3)] font-semibold">
               TALK TIME
             </span>
             <Badge label={`${talkPct}% · Good`} variant="terracotta" />
           </div>
-          <div className="text-3xl font-light text-stone-100 tabular-nums mb-3">
+          <div className="text-3xl font-light text-[var(--t1)] tabular-nums mb-3">
             {formatTime(talkTime)}
           </div>
           {/* Progress track */}
-          <div className="h-1.5 bg-[#393431] rounded-full mb-2 overflow-hidden">
+          <div className="h-1.5 bg-[var(--border2)] rounded-full mb-2 overflow-hidden">
             <div
               className="h-full bg-terracotta rounded-full"
               style={{ width: `${talkPct}%` }}
             />
           </div>
-          <p className="text-[11px] text-stone-500 font-light">
+          <p className="text-[11px] text-[var(--t3)] font-light">
             {formatTime(talkTime)} of speech in {formatTime(totalTime)} total.
           </p>
         </div>
       </div>
 
       {/* FILLER WORDS CARD (full width) */}
-      <div className="bg-[#231f1c] border border-[#2A1E16] rounded-xl p-6">
+      <div className="bg-[var(--s2)] border border-[var(--border)] rounded-xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-[10px] uppercase tracking-[0.08em] text-stone-500 font-semibold">
+          <span className="text-[10px] uppercase tracking-[0.08em] text-[var(--t3)] font-semibold">
             FILLER WORDS
           </span>
           <span className="text-xs text-[#C9912A] font-bold tabular-nums">
@@ -109,18 +109,18 @@ const AcousticMetrics = ({ pace, talkTime, totalTime = 90, fillerWords, pauses }
             </span>
           ))}
         </div>
-        <p className="text-[11px] text-stone-500 font-light">
+        <p className="text-[11px] text-[var(--t3)] font-light">
           Filler words are natural but awareness helps reduce overuse.
         </p>
       </div>
 
       {/* PAUSE DETECTION CARD (full width) */}
-      <div className="bg-[#231f1c] border border-[#2A1E16] rounded-xl p-6">
+      <div className="bg-[var(--s2)] border border-[var(--border)] rounded-xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-[10px] uppercase tracking-[0.08em] text-stone-500 font-semibold">
+          <span className="text-[10px] uppercase tracking-[0.08em] text-[var(--t3)] font-semibold">
             PAUSES DETECTED
           </span>
-          <span className="text-xs text-stone-400 font-bold tabular-nums bg-[#393431] px-2 py-0.5 rounded">
+          <span className="text-xs text-[var(--t3)] font-bold tabular-nums bg-[var(--border2)] px-2 py-0.5 rounded">
             {pauseCount}
           </span>
         </div>
@@ -146,7 +146,7 @@ const AcousticMetrics = ({ pace, talkTime, totalTime = 90, fillerWords, pauses }
           {/* Trailing speech segment */}
           <div className="h-full bg-terracotta/20 rounded-sm flex-1 min-w-[20px]" />
         </div>
-        <p className="text-[11px] text-stone-500 font-light">
+        <p className="text-[11px] text-[var(--t3)] font-light">
           Strategic pauses add emphasis and give the listener time to absorb key points.
         </p>
       </div>

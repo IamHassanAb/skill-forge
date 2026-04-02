@@ -150,7 +150,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
   const remaining = MAX_SECONDS - timer;
 
   return (
-    <div className="bg-[#1C1410] border border-[#2A1E16] rounded-3xl p-12 md:p-16 relative overflow-hidden">
+    <div className="bg-[var(--s1)] border border-[var(--border)] rounded-3xl p-12 md:p-16 relative overflow-hidden">
       {/* Background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-terracotta/5 blur-[100px] pointer-events-none" />
 
@@ -172,17 +172,17 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
           <div className="flex flex-col items-center">
             <button
               onClick={startRecording}
-              className="w-[72px] h-[72px] rounded-full bg-[#241912] border border-[#3D2820] flex items-center justify-center hover:border-terracotta transition-all group cursor-pointer mb-6"
+              className="w-[72px] h-[72px] rounded-full bg-[var(--s2)] border border-[var(--border2)] flex items-center justify-center hover:border-terracotta transition-all group cursor-pointer mb-6"
             >
-              <svg className="w-7 h-7 text-stone-500 group-hover:text-terracotta transition-colors" viewBox="0 0 24 24" fill="currentColor">
+              <svg className="w-7 h-7 text-[var(--t3)] group-hover:text-terracotta transition-colors" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
                 <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
               </svg>
             </button>
-            <span className="text-stone-500 text-sm font-medium tracking-wide mb-2">
+            <span className="text-[var(--t3)] text-sm font-medium tracking-wide mb-2">
               Tap to begin recording
             </span>
-            <span className="text-[10px] uppercase tracking-widest text-stone-600">
+            <span className="text-[10px] uppercase tracking-widest text-[var(--t4)]">
               60–90 seconds · Max 1:30
             </span>
           </div>
@@ -203,7 +203,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
             </div>
 
             {/* Timer */}
-            <div className="text-6xl font-light text-stone-100 tabular-nums tracking-tight mb-8">
+            <div className="text-6xl font-light text-[var(--t1)] tabular-nums tracking-tight mb-8">
               {formatTime(timer)}
             </div>
 
@@ -221,7 +221,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
               ))}
             </div>
 
-            <span className="text-stone-500 text-sm">
+            <span className="text-[var(--t3)] text-sm">
               Tap to stop · {formatTime(remaining)} remaining
             </span>
 
@@ -250,7 +250,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
             )}
 
             {/* Audio player card */}
-            <div className="w-full bg-[#241912] border border-[#2A1E16] rounded-xl p-4">
+            <div className="w-full bg-[var(--s2)] border border-[var(--border)] rounded-xl p-4">
               <div className="flex items-center gap-4">
                 {/* Play button */}
                 <button
@@ -284,10 +284,10 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
               </div>
 
               <div className="flex justify-between mt-2">
-                <span className="text-stone-500 text-xs tabular-nums">
+                <span className="text-[var(--t3)] text-xs tabular-nums">
                   {formatTime(Math.floor(playbackTime))}
                 </span>
-                <span className="text-stone-500 text-xs tabular-nums">
+                <span className="text-[var(--t3)] text-xs tabular-nums">
                   {formatTime(Math.floor(playbackDuration))}
                 </span>
               </div>
@@ -295,16 +295,16 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
 
             {/* Transcript preview */}
             <div className="w-full bg-[#2A1E16] rounded-lg p-4">
-              <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-stone-500 mb-2">
+              <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-[var(--t3)] mb-2">
                 TRANSCRIPT PREVIEW
               </div>
               {isTranscribing ? (
-                <div className="flex items-center gap-2 text-stone-500 text-sm">
+                <div className="flex items-center gap-2 text-[var(--t3)] text-sm">
                   <div className="w-3 h-3 border-2 border-stone-600 border-t-terracotta rounded-full animate-spin" />
                   Transcribing…
                 </div>
               ) : (
-                <p className="font-serif italic text-stone-400 text-sm leading-relaxed">
+                <p className="font-serif italic text-[var(--t3)] text-sm leading-relaxed">
                   {transcript}
                 </p>
               )}
@@ -314,7 +314,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
             <div className="flex items-center gap-4 w-full">
               <button
                 onClick={resetRecording}
-                className="text-stone-500 hover:text-stone-300 transition-colors text-sm font-medium cursor-pointer"
+                className="text-[var(--t3)] hover:text-[var(--t2)] transition-colors text-sm font-medium cursor-pointer"
               >
                 Re-record
               </button>

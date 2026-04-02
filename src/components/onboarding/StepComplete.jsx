@@ -4,7 +4,7 @@ const StepComplete = ({ stages, focusAreas, context, onBegin }) => {
   const tags = [...focusAreas, context];
 
   return (
-    <div className="min-h-screen bg-[#110D0B] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-2xl">
         {/* OUTER WRAPPER */}
         <div className="flex flex-col items-center">
@@ -21,7 +21,7 @@ const StepComplete = ({ stages, focusAreas, context, onBegin }) => {
           </div>
 
           {/* HEADING */}
-          <h1 className="font-serif italic text-4xl md:text-5xl text-stone-100 leading-tight text-center mb-4">
+          <h1 className="font-serif italic text-4xl md:text-5xl text-[var(--t1)] leading-tight text-center mb-4">
             Your plan is ready.
           </h1>
 
@@ -43,8 +43,8 @@ const StepComplete = ({ stages, focusAreas, context, onBegin }) => {
           </div>
 
           {/* STUDY PLAN PREVIEW CARD */}
-          <div className="bg-[#231f1c] rounded-3xl p-8 w-full mb-6">
-            <div className="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-6">
+          <div className="bg-[var(--s2)] rounded-3xl p-8 w-full mb-6">
+            <div className="text-[10px] uppercase tracking-widest text-[var(--t3)] font-bold mb-6">
               YOUR STUDY PLAN
             </div>
 
@@ -56,7 +56,7 @@ const StepComplete = ({ stages, focusAreas, context, onBegin }) => {
                     key={stage.id}
                     className={`flex items-center gap-4 p-4 rounded-2xl transition-all ${
                       isFirst
-                        ? 'bg-[#393431] border border-terracotta/20'
+                        ? 'bg-[var(--border2)] border border-terracotta/20'
                         : ''
                     }`}
                   >
@@ -65,7 +65,7 @@ const StepComplete = ({ stages, focusAreas, context, onBegin }) => {
                       className={`w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0 ${
                         isFirst
                           ? 'bg-terracotta text-white font-bold'
-                          : 'border border-[#55423e] text-stone-500'
+                          : 'border border-[#55423e] text-[var(--t3)]'
                       }`}
                     >
                       {stage.id}
@@ -96,7 +96,7 @@ const StepComplete = ({ stages, focusAreas, context, onBegin }) => {
           </button>
 
           {/* NOTE */}
-          <p className="text-stone-500 text-sm text-center mt-4">
+          <p className="text-[var(--t3)] text-sm text-center mt-4">
             You can always update your focus areas in settings.
           </p>
         </div>

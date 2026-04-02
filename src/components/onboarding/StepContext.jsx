@@ -22,17 +22,17 @@ const StepContext = ({ onNext, onBack }) => {
   const [selected, setSelected] = useState(null);
 
   return (
-    <div className="min-h-screen bg-[#110D0B] flex items-center justify-center px-4">
-      <div className="w-full max-w-2xl bg-[#231f1c] rounded-3xl p-8 md:p-12">
+    <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center px-4">
+      <div className="w-full max-w-2xl bg-[var(--s2)] rounded-3xl p-8 md:p-12">
         {/* PROGRESS BARS */}
         <div className="flex gap-2 w-32 mb-10">
           <div className="flex-1 h-1 rounded-full bg-terracotta" />
           <div className="flex-1 h-1 rounded-full bg-terracotta" />
-          <div className="flex-1 h-1 rounded-full bg-[#393431]" />
+          <div className="flex-1 h-1 rounded-full bg-[var(--border2)]" />
         </div>
 
         {/* HEADING */}
-        <h1 className="font-serif text-4xl md:text-5xl text-stone-100 leading-tight mb-4">
+        <h1 className="font-serif text-4xl md:text-5xl text-[var(--t1)] leading-tight mb-4">
           Where do you most need these skills?
         </h1>
 
@@ -52,7 +52,7 @@ const StepContext = ({ onNext, onBack }) => {
                 className={`w-full text-left p-6 rounded-xl border cursor-pointer transition-all flex items-start gap-4 ${
                   isSelected
                     ? 'border-terracotta/30 bg-terracotta/5'
-                    : 'border-[#3D2820] bg-[#1f1b18]'
+                    : 'border-[var(--border2)] bg-[#1f1b18]'
                 }`}
               >
                 {/* Radio circle */}
@@ -74,7 +74,7 @@ const StepContext = ({ onNext, onBack }) => {
 
                 {/* Text */}
                 <div>
-                  <div className="font-serif text-2xl text-stone-100 mb-1">{option.title}</div>
+                  <div className="font-serif text-2xl text-[var(--t1)] mb-1">{option.title}</div>
                   <div className="text-[#A89880] text-sm leading-snug">{option.desc}</div>
                 </div>
               </button>
@@ -86,12 +86,12 @@ const StepContext = ({ onNext, onBack }) => {
         <div className="flex items-center justify-between">
           <button
             onClick={onBack}
-            className="text-stone-500 hover:text-stone-300 transition-colors text-sm font-medium cursor-pointer"
+            className="text-[var(--t3)] hover:text-[var(--t2)] transition-colors text-sm font-medium cursor-pointer"
           >
             ← Back
           </button>
 
-          <span className="text-stone-500 text-xs uppercase tracking-widest">
+          <span className="text-[var(--t3)] text-xs uppercase tracking-widest">
             Step 2 of 3
           </span>
 

@@ -22,8 +22,8 @@ const StepFocusAreas = ({ onNext }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#110D0B] flex items-center justify-center px-4">
-      <div className="w-full max-w-2xl bg-[#231f1c] rounded-3xl p-8 md:p-12">
+    <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center px-4">
+      <div className="w-full max-w-2xl bg-[var(--s2)] rounded-3xl p-8 md:p-12">
         {/* 1. LOGO */}
         <div className="mb-8">
           <span className="font-serif italic text-3xl text-terracotta">Situo</span>
@@ -32,12 +32,12 @@ const StepFocusAreas = ({ onNext }) => {
         {/* 2. PROGRESS BARS */}
         <div className="flex gap-2 w-32 mb-10">
           <div className="flex-1 h-1 rounded-full bg-terracotta" />
-          <div className="flex-1 h-1 rounded-full bg-[#393431]" />
-          <div className="flex-1 h-1 rounded-full bg-[#393431]" />
+          <div className="flex-1 h-1 rounded-full bg-[var(--border2)]" />
+          <div className="flex-1 h-1 rounded-full bg-[var(--border2)]" />
         </div>
 
         {/* 3. HEADING */}
-        <h1 className="font-serif text-4xl md:text-5xl text-stone-100 leading-tight mb-4">
+        <h1 className="font-serif text-4xl md:text-5xl text-[var(--t1)] leading-tight mb-4">
           What do you most want to improve?
         </h1>
 
@@ -57,7 +57,7 @@ const StepFocusAreas = ({ onNext }) => {
                 className={`px-6 py-3 rounded-full font-sans transition-all cursor-pointer ${
                   isSelected
                     ? 'bg-terracotta text-white font-medium'
-                    : 'border border-[#55423e] text-[#dbc1ba] hover:border-terracotta hover:text-stone-100'
+                    : 'border border-[#55423e] text-[#dbc1ba] hover:border-terracotta hover:text-[var(--t1)]'
                 }`}
               >
                 {area}
@@ -68,7 +68,7 @@ const StepFocusAreas = ({ onNext }) => {
 
         {/* 6. FOOTER */}
         <div className="flex items-center justify-between">
-          <span className="text-stone-500 text-xs uppercase tracking-widest">
+          <span className="text-[var(--t3)] text-xs uppercase tracking-widest">
             Step 1 of 3
           </span>
           <button
