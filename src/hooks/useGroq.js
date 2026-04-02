@@ -1,20 +1,13 @@
 import { useState } from 'react';
-import Groq from 'groq-sdk';
 
-export default function useGroq(apiKey, systemPrompt) {
+export default function useGroq(systemPrompt) {
   const [isLoading, setIsLoading] = useState(false);
   const [conversationHistory, setConversationHistory] = useState([]);
 
   // We maintain the identical signature so our React Components don't need changes
-  const sendMessage = async (userText, imageBase64 = null, mimeType = null, keyOverride = null, skipHistory = false) => {
+  const sendMessage = async (userText, imageBase64 = null, mimeType = null, skipHistory = false) => {
     if (!userText?.trim() && !imageBase64) return null;
     
-    const effectiveKey = keyOverride || apiKey;
-    if (!effectiveKey) {
-      console.error("Groq API key is required.");
-      return null;
-    }
-
     setIsLoading(true);
 
     const userContent = imageBase64
@@ -44,8 +37,6 @@ export default function useGroq(apiKey, systemPrompt) {
     }
 
     try {
-      const groq = new Groq({ apiKey: effectiveKey, dangerouslyAllowBrowser: true });
-
       const messages = [
         { 
           role: "system", 
@@ -65,12 +56,19 @@ export default function useGroq(apiKey, systemPrompt) {
 
       console.log("PROCESSED MESSAGES FOR GROQ:", messages);
 
-      const completion = await groq.chat.completions.create({
-        messages,
-        model: "meta-llama/llama-4-scout-17b-16e-instruct",
+      const response = await fetch('http://localhost:8000/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages,
+          model: "meta-llama/llama-4-scout-17b-16e-instruct",
+          isJson: skipHistory
+        })
       });
 
-      const modelText = completion.choices[0]?.message?.content || "";
+      const data = await response.json();
+      const modelText = data.content;
+
       console.log("GROQ RESPONSE:", modelText);
       
       if (!skipHistory) {
@@ -82,7 +80,7 @@ export default function useGroq(apiKey, systemPrompt) {
       return modelText;
 
     } catch (error) {
-      console.error("Groq SDK API Error:", error);
+      console.error("API Error:", error);
       setIsLoading(false);
       return null;
     }

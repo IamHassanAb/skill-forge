@@ -26,15 +26,15 @@ function App() {
   const confidenceLevel = getConfidence(sessionsCompleted);
   const systemPrompt = getTrainerPrompt(currentSessionActive, userGoal, sessionsCompleted);
 
-  const { sendMessage, isLoading, resetConversation } = useGroq(apiKey, systemPrompt);
+  const { sendMessage, isLoading, resetConversation } = useGroq(systemPrompt);
 
   const generateStudyPlan = async (key) => {
     // Explicitly seed the history behind the scenes 
     // We pass the 'key' directly because setApiKey is async
     const planPrompt = "Generate a 5-stage photography study plan for a complete beginner. Respond ONLY in raw JSON, no markdown, no backticks: { \"stages\": [ { \"id\": 1, \"title\": \"...\", \"description\": \"...\" } ] }";
     
-    // Pass key as the 4th argument (keyOverride) and true as the 5th (skipHistory)
-    const response = await sendMessage(planPrompt, null, null, key, true);
+    // Pass true as the 4th argument (skipHistory)
+    const response = await sendMessage(planPrompt, null, null, true);
     
     if (response) {
       console.log("RAW STAGES RESPONSE:", response);
