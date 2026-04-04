@@ -10,14 +10,15 @@ const ITEMS = [
 // Delay (ms) after mount before each item ticks complete
 const DELAYS = [1200, 2600, 4000, 5400];
 
-const DiagnosticLoading = () => {
+const DiagnosticLoading = ({ onComplete }) => {
   const [completedCount, setCompletedCount] = useState(0);
 
   useEffect(() => {
     const timers = DELAYS.map((delay, i) =>
       setTimeout(() => setCompletedCount(i + 1), delay)
     );
-    return () => timers.forEach(clearTimeout);
+    const doneTimer = setTimeout(() => onComplete?.(), 2500);
+    return () => { timers.forEach(clearTimeout); clearTimeout(doneTimer); };
   }, []);
 
   return (
