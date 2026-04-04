@@ -6,6 +6,7 @@
 | v0.3    | March 31, 2026 | Hassan  | All TBDs resolved. Supabase + magic link auth added to scope. Database schema defined. Reviewer privacy enforced via RLS. |
 | v0.4        | April 2, 2026 | Hassan  | Spoken sessions added to MVP scope. |
 | v0.4(patch) | April 2, 2026 | Hassan  | Acoustic metrics added to spoken sessions. |
+| v0.5        | April 4, 2026 | Hassan  | Onboarding expanded to 4 steps with SPF diagnostic baseline analysis. Stage 5 re-test added. New 3.1.3a Spoken Session UI defines Delivery Notice and Action Bar hierarchy. diagnostics table added to schema. Glossary updated with SPF, Diagnostic Task, and Growth Areas. |
 
 ## 1. Introduction
 
@@ -61,7 +62,7 @@ Situo is a standalone web application that serves as a communication skills lear
 The product differentiates itself by combining AI and human feedback in a situated learning context, addressing the gap where existing tools provide only one type of feedback.
 
 ### 2.2 Product Functions
-- User onboarding (3 steps: Focus Areas, Context, Baseline Submission)
+- User onboarding (4 steps: Focus Areas, Context, Baseline Submission)
 - Study plan generation based on user input
 - Content presentation and lesson delivery
 - Practice session management with submission handling
@@ -103,21 +104,34 @@ No level label is applied to users at any point. Users self-select focus areas a
 ### 3.1 Functional Requirements
 
 #### 3.1.1 Onboarding Flow
-When a new user accesses the application, the system shall present a 3-step onboarding flow.
+When a new user accesses the application, the system shall present a 4-step onboarding flow.
 
 When the user completes Step 1 (Focus Areas), the system shall allow multi-selection from: Emotional intelligence, Clarity and conciseness, Active listening, Nonverbal communication, Tone and vocal variety, Storytelling, Handling nervousness.
 
 When the user completes Step 2 (Context), the system shall allow single selection from: Professional (presentations, meetings), Social (conversations, networking), Both.
 
-When the user completes Step 3 (Baseline Submission), the system shall prompt for a 150-word response to a standard prompt and store it as a benchmark without evaluation. 
-> The baseline prompt shall ask the user to describe a recent situation where they had to communicate something important. It shall be the same prompt for all users to enable future before/after comparison. The exact wording shall be defined by the founder before implementation of OnboardingFlow.jsx.
+User writes a free-form response to the locked baseline prompt (see below). Minimum 10 words to enable submission. On submit: triggers diagnostic analysis (Step 3→4 transition screen) then study plan generation. Both run synchronously. User waits on loading screen. Total expected wait: 4–8 seconds.
 
-When onboarding is complete, the system shall generate a personalized 5-stage study plan based on Steps 1 and 2 answers.
+When onboarding is complete, the system shall display DiagnosticResult.jsx output from baseline analysis, followed by the generated 5-stage study plan. User clicks "Begin Stage 1" to enter the session loop.
+
+### 3.1.1a Baseline Prompt — LOCKED, PERMANENT
+
+The following prompt is used for both the initial baseline submission (Step 3) and the Stage 5 re-test. It must not be changed, paraphrased, or customised per user. It is identical in both contexts.
+
+"Think of a recent situation where you had to navigate a disagreement or tension between people — this could be at work, with friends, 
+or in any group setting. Describe the situation briefly, then explain how you approached it. What did you say or do to help move things forward?"
+
 
 #### 3.1.2 Study Plan Generation
-When onboarding answers are received, the system shall generate a 5-stage study plan with each stage mapping to selected focus areas.
+Study plan generation now takes three input parameters (previously two):
 
-When a study plan is generated, the system shall map curated content pieces to appropriate stages using focusAreas[] and contentLevel metadata.
+1. focusAreas[] — selected in Step 1
+2. context — selected in Step 2
+3. diagnosticFindings — output of baseline analysis
+   Shape: { strengths[], growth_areas[], 
+            patterns[], recommended_focus[] }
+
+The diagnosticFindings are passed to the study plan generation prompt to personalise stage titles and sequencing beyond the default curriculum.
 
 ### Content Data Shape
 Each content piece in the library shall conform to:
@@ -137,6 +151,8 @@ Each content piece in the library shall conform to:
 | practicePrompt| string                            | Writing prompt for practice step |
 
 #### 3.1.3 Session Loop Execution
+Two session paths shall exist: Written Path and Spoken Path.
+
 When a user starts a session, the system shall execute the SPARK step by surfacing one piece of curated content mapped to the current study plan stage.
 
 When the SPARK step completes, the system shall execute the LEARN step by delivering a 3-5 minute AI-generated lesson connecting the content to the user's current stage concept.
@@ -153,8 +169,27 @@ Session type is determined by the study plan based on the user's selected focus 
 - All other focus areas → written
 - Mixed focus areas → study plan alternates types by stage
 
-#### 3.1.4 AI Feedback
-When the user submits their practice response, the system shall execute the AI FEEDBACK step by evaluating clarity, structure, conciseness, and relevance, explicitly flagging unassessable elements, and suggesting human review value.
+#### 3.1.3a Spoken Session UI
+
+**Delivery Notice** — displayed on all spoken feedback screens (non-negotiable):
+
+> **"Delivery requires a human ear"**
+> AI assessed your words from the transcript. These elements can only be heard — not read:
+> - Tone and vocal variety
+> - Pace and use of pausing
+> - Confidence and presence
+> - Nervousness signals
+
+**Spoken Action Bar Hierarchy** (non-negotiable):
+- Primary CTA: "Request Human Review" (terracotta filled button)
+- Secondary CTA: "Continue" (ghost, muted)
+- This hierarchy is the inverse of written sessions where "Continue" is the primary action.
+
+#### 3.1.4 Stage 5 Re-Test
+On completion of Stage 5, the system shall present the user with the locked baseline prompt (identical wording to onboarding Step 3). This second submission enables explicit before/after comparison. The system shall store both submissions in the diagnostics table linked by user_id. The DiagnosticResult.jsx component shall display both results side by side on the completion screen.
+
+#### 3.1.5 AI Feedback
+When the user submits their practice response, the system shall execute the AI FEEDBACK step by evaluating clarity, structure, word choice, and relevance (each scored 1–5 with a written note), explicitly flagging unassessable elements, and suggesting human review value.
 
 When the submission is spoken, the system shall:
 1. Send audio to POST /api/transcribe (Groq Whisper)
@@ -173,7 +208,7 @@ These metrics are displayed as objective measurements only. No confidence, nervo
 
 When AI feedback is delivered, the system shall allow the user to optionally request human review.
 
-#### 3.1.5 Human Review System
+#### 3.1.6 Human Review System
 When a user requests human review, the system shall queue the request for reviewer assignment.
 
 When a reviewer (Tier 1 or 2) is assigned, the system shall provide only: the submission, lesson context, user's stated goal, and structured review form.
@@ -186,7 +221,7 @@ When a review request receives no reviewer response within 48 hours, the system 
 
 **[TBD-5 — RESOLVED]**
 
-#### 3.1.6 Progression and Confidence Scoring
+#### 3.1.7 Progression and Confidence Scoring
 When sessions are completed, the system shall calculate confidence score using weighted formula: 40% AI assessment, 40% human reviewer ratings (when available), 20% consistency.
 
 When no human reviews are received, the system shall redistribute weights to 60% AI assessment, 40% consistency.
@@ -218,7 +253,7 @@ When a new goal is selected, the system shall generate a new 5-stage study plan.
 
 The shareable dashboard shall be private by default. The user must explicitly choose to generate and share the public URL. No dashboard URL shall be accessible without deliberate user action.
 
-#### 3.1.7 Reviewer Management
+#### 3.1.8 Reviewer Management
 When a user completes their first full goal cycle, the system shall invite them to become a Tier 1 Peer Reviewer.
 
 When a Tier 1 reviewer maintains below 3.5 star average rating, the system shall suspend their review privileges.
@@ -276,7 +311,7 @@ The system shall support up to 10 returning users for MVP success metric.
 
 #### 3.3.1 User Interfaces
 The system shall provide a web-based interface with the following components:
-- OnboardingFlow.jsx (3-step onboarding)
+- OnboardingFlow.jsx (4-step onboarding)
 - SparkCard.jsx (content display)
 - LessonCard.jsx (AI lesson)
 - SubmissionPanel.jsx (response input)
@@ -326,6 +361,7 @@ The system uses Supabase (PostgreSQL). The following tables are required:
 | review_requests     | Human review requests with status and expiry tracking |
 | reviews             | Completed human reviews + learner rating of reviewer |
 | reviewer_profiles   | Tier, verified status, avg rating, suspension status |
+| diagnostics         | Baseline and re-test diagnostic results (SPF output) per user |
 
 Full schema definition is maintained separately in docs/schema.sql.
 
@@ -333,6 +369,7 @@ Supabase Storage bucket: audio-submissions
 - RLS: users access own audio only
 - Reviewers access audio linked to assigned review_request only
 - Audio auto-expires after 90 days
+- File naming: {user_id}/{session_id}.webm
 
 ### 4.2 Performance Requirements
 The application shall load initial content within 3 seconds on standard broadband connections.
@@ -389,13 +426,16 @@ ContinuityCard, ShareableDashboard, next goal suggestion flow
 - **Session Loop**: The core sequence of every learning session: SPARK → LEARN → PRACTICE → AI FEEDBACK → (optional) HUMAN REVIEW.
 - **Spark**: The step where the app surfaces one piece of curated content (article, video clip, podcast excerpt) mapped to the user's current study plan stage.
 - **Confidence Score**: A weighted metric (40% AI assessment, 40% human ratings, 20% consistency) displayed as Low/Medium/High badge, not based on session count.
-- **Baseline Submission**: The initial 150-word response written during onboarding, stored as a benchmark for future progress comparison without evaluation.
+- **Baseline Submission**: A written response to the locked baseline prompt, submitted during Step 3 of onboarding and again at Stage 5 completion (re-test). Each submission triggers diagnostic analysis, generating an SPF. Both submissions are stored in the diagnostics table linked by user_id, enabling explicit before/after comparison on the completion screen.
 - **Tier 1 Reviewer (Peer)**: Reviewers eligible after completing one full goal cycle, can review beginner-level content submissions, rated by learners.
 - **Tier 2 Reviewer (Verified)**: Application-based reviewers who can review all content levels, receive verified badge and credibility benefits.
 - **Goal History**: An ordered list of completed and active goals, showing progression through goal sophistication rather than levels.
 - **Continuity Card**: A screen shown after goal completion summarizing the previous goal outcome, selected next goal, rationale, and transition actions.
 - **Shareable Dashboard**: A public URL generated upon goal completion displaying stats only (sessions completed, AI confidence score, human ratings, peer reviews given, goal history, verified badge).
 - **contentLevel**: An internal metadata field (beginner/intermediate/advanced) used for content filtering and reviewer access gating, never displayed to users.
+- **SPF (Situated Performance Fingerprint)**: The structured output of the diagnostic baseline analysis. Shape: `{ strengths[], growth_areas[], patterns[], recommended_focus[] }`. Generated by Groq llama-4-scout from the user's baseline submission. Used to personalise the study plan and displayed to the user as Step 4 of onboarding.
+- **Diagnostic Task**: The act of submitting a written response to the locked baseline prompt. Occurs twice: once during onboarding (Step 3) and once on Stage 5 completion (re-test). Enables measurable before/after comparison.
+- **Growth Areas**: Communication behaviours identified in the user's baseline submission that have room for development. Distinct from weaknesses — framed constructively. Stored in `diagnostics.growth_areas[]`.
 
 ### 5.2 Resolved TBDs
 No open TBDs remain as of v0.3. All 9 TBDs have been resolved and patched into their respective sections.
