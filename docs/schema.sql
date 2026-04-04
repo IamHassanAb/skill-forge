@@ -1,6 +1,6 @@
 -- =============================================================
 -- Situo — Supabase PostgreSQL Schema
--- Version: v0.3 | March 31, 2026
+-- Version: v0.5 | April 5, 2026
 -- Maintained by: Hassan
 -- =============================================================
 -- Enable UUID generation extension (already on in Supabase)
@@ -184,6 +184,45 @@ CREATE TABLE reviewer_profiles (
   verified_at         TIMESTAMPTZ,
   created_at          TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+
+
+-- ─────────────────────────────────────────────────────────────
+-- TABLE: diagnostics
+-- One row per diagnostic submission (baseline and re-test).
+-- ─────────────────────────────────────────────────────────────
+
+CREATE TABLE diagnostics (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) 
+    ON DELETE CASCADE,
+  submission_text TEXT NOT NULL,
+  strengths TEXT[] NOT NULL DEFAULT '{}',
+  growth_areas TEXT[] NOT NULL DEFAULT '{}',
+  patterns TEXT[] NOT NULL DEFAULT '{}',
+  recommended_focus TEXT[] NOT NULL DEFAULT '{}',
+  submission_type TEXT NOT NULL 
+    CHECK (submission_type IN ('baseline', 'retest')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE diagnostics ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can read own diagnostics"
+  ON diagnostics FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own diagnostics"
+  ON diagnostics FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+-- ─────────────────────────────────────────────────────────────
+-- STORAGE BUCKET: audio-submissions
+-- Auto-expire: 90 days
+-- Access: private (RLS enforced)
+-- File naming: {user_id}/{session_id}.webm
+-- ─────────────────────────────────────────────────────────────
+
 
 CREATE INDEX idx_reviewer_profiles_user_id ON reviewer_profiles(user_id);
 CREATE INDEX idx_reviewer_profiles_tier    ON reviewer_profiles(tier);
