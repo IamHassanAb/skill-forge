@@ -212,14 +212,14 @@ Each task below is a self-contained prompt for a coding agent. Execute in priori
 
 ### Task 15: Add error boundaries around screen sections
 
-- [ ] Create a reusable `src/components/shared/ErrorBoundary.jsx` component using a class component (error boundaries require `componentDidCatch`).
-- [ ] The fallback UI should show a styled card with the message "Something went wrong" and a "Try again" button that calls `this.setState({ hasError: false })`.
-- [ ] Style the fallback using the project's design tokens (`var(--bg)`, `var(--s1)`, `var(--t1)`, `terracotta`).
-- [ ] Wrap the following sections in `App.jsx` with `<ErrorBoundary>`:
+- [x] Create a reusable `src/components/shared/ErrorBoundary.jsx` component using a class component (error boundaries require `componentDidCatch`).
+- [x] The fallback UI should show a styled card with the message "Something went wrong" and a "Try again" button that calls `this.setState({ hasError: false })`.
+- [x] Style the fallback using the project's design tokens (`var(--bg)`, `var(--s1)`, `var(--t1)`, `terracotta`).
+- [x] Wrap the following sections in `App.jsx` with `<ErrorBoundary>`:
   - The onboarding screen
   - The session content area
   - The feedback screen
-- [ ] Verify that throwing an error inside a wrapped component shows the fallback instead of a white screen.
+- [x] Verify that throwing an error inside a wrapped component shows the fallback instead of a white screen.
 
 ---
 

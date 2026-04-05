@@ -6,6 +6,7 @@ const ReaderPanel = lazy(() => import('./components/reader/ReaderPanel'));
 const FeedbackLayout = lazy(() => import('./components/feedback/FeedbackLayout'));
 
 import Sidebar from './components/shared/Sidebar';
+import ErrorBoundary from './components/shared/ErrorBoundary';
 import SessionLayout from './components/session/SessionLayout';
 import SparkCard from './components/session/SparkCard';
 import LearnCard from './components/session/LearnCard';
@@ -15,6 +16,7 @@ import AudioRecorder from './components/session/AudioRecorder';
 import useGroq from './hooks/useGroq';
 import useSession from './hooks/useSession';
 import useFeedback from './hooks/useFeedback';
+import Bomb from './components/shared/Bomb';
 
 function App() {
   // ─── Screen state ───
@@ -95,9 +97,15 @@ function App() {
 
   if (screen === 'onboarding') {
     return (
-      <Suspense fallback={<div className="min-h-screen bg-[var(--bg)]" />}>
-        <OnboardingFlow onComplete={handleOnboardingComplete} />
-      </Suspense>
+      <ErrorBoundary>
+
+        <>
+          <Suspense fallback={<div className="min-h-screen bg-[var(--bg)]" />}>
+            <OnboardingFlow onComplete={handleOnboardingComplete} />
+          </Suspense>
+
+        </>
+      </ErrorBoundary>
     );
   }
 
@@ -137,86 +145,91 @@ function App() {
       {/* Main content area */}
       <SessionLayout stageTitle={stageTitle} sessionLabel={sessionLabel}>
         {screen === 'session' && (
-          <>
-            {/* SPARK */}
-            {sessionStep === 'spark' && currentContent && (
-              <div className="space-y-6">
-                <SparkCard
-                  title={currentContent.title}
-                  source={currentContent.source}
-                  type={currentContent.type}
-                  readTime={currentContent.readTime}
-                  hookText={currentContent.lessonHook}
-                  onReadFullPiece={handleReadFullPiece}
+          <ErrorBoundary>
+            {/* <Bomb /> */}
+            <>
+              {/* SPARK */}
+              {sessionStep === 'spark' && currentContent && (
+                <div className="space-y-6">
+                  <SparkCard
+                    title={currentContent.title}
+                    source={currentContent.source}
+                    type={currentContent.type}
+                    readTime={currentContent.readTime}
+                    hookText={currentContent.lessonHook}
+                    onReadFullPiece={handleReadFullPiece}
+                  />
+                  <div className="flex justify-end">
+                    <button
+                      onClick={handleSparkContinue}
+                      disabled={isLoading}
+                      className="bg-terracotta text-white px-8 py-3 rounded-xl font-bold hover:opacity-90 transition-all disabled:opacity-40 inline-flex items-center gap-2"
+                    >
+                      {isLoading ? (
+                        <>
+                          <div role="status" aria-live="polite" className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          Generating lesson…
+                        </>
+                      ) : (
+                        'Continue to lesson →'
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* LEARN */}
+              {sessionStep === 'learn' && (
+                <div className="space-y-6">
+                  <LearnCard lessonText={lessonText} keyTerms={keyTerms} />
+                  <div className="flex justify-end">
+                    <button
+                      onClick={handleLearnContinue}
+                      className="bg-terracotta text-white px-8 py-3 rounded-xl font-bold hover:opacity-90 transition-all"
+                    >
+                      Continue to practice →
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* PRACTICE */}
+              {sessionStep === 'practice' && sessionType === 'written' && (
+                <WrittenPractice
+                  prompt={currentContent?.practicePrompt || ''}
+                  onSubmit={handleWrittenSubmit}
+                  isLoading={isLoading}
                 />
-                <div className="flex justify-end">
-                  <button
-                    onClick={handleSparkContinue}
-                    disabled={isLoading}
-                    className="bg-terracotta text-white px-8 py-3 rounded-xl font-bold hover:opacity-90 transition-all disabled:opacity-40 inline-flex items-center gap-2"
-                  >
-                    {isLoading ? (
-                      <>
-                        <div role="status" aria-live="polite" className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Generating lesson…
-                      </>
-                    ) : (
-                      'Continue to lesson →'
-                    )}
-                  </button>
-                </div>
-              </div>
-            )}
+              )}
 
-            {/* LEARN */}
-            {sessionStep === 'learn' && (
-              <div className="space-y-6">
-                <LearnCard lessonText={lessonText} keyTerms={keyTerms} />
-                <div className="flex justify-end">
-                  <button
-                    onClick={handleLearnContinue}
-                    className="bg-terracotta text-white px-8 py-3 rounded-xl font-bold hover:opacity-90 transition-all"
-                  >
-                    Continue to practice →
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* PRACTICE */}
-            {sessionStep === 'practice' && sessionType === 'written' && (
-              <WrittenPractice
-                prompt={currentContent?.practicePrompt || ''}
-                onSubmit={handleWrittenSubmit}
-                isLoading={isLoading}
-              />
-            )}
-
-            {sessionStep === 'practice' && sessionType === 'spoken' && (
-              <AudioRecorder
-                prompt={currentContent?.practicePrompt || ''}
-                onSubmit={handleSpokenSubmit}
-                isLoading={isLoading}
-              />
-            )}
-          </>
+              {sessionStep === 'practice' && sessionType === 'spoken' && (
+                <AudioRecorder
+                  prompt={currentContent?.practicePrompt || ''}
+                  onSubmit={handleSpokenSubmit}
+                  isLoading={isLoading}
+                />
+              )}
+            </>
+          </ErrorBoundary>
         )}
 
         {screen === 'feedback' && (
-          <Suspense fallback={<div className="min-h-screen bg-[var(--bg)]" />}>
-            <FeedbackLayout
-              submission={feedbackState.submission}
-              audioTranscript={feedbackState.audioTranscript}
-              audioDuration={feedbackState.audioDuration}
-              isSpoken={feedbackState.isSpoken}
-              contentCategories={feedbackState.contentCategories}
-              acousticMetrics={feedbackState.acousticMetrics}
-              overallText={feedbackState.overallText}
-              onRequestReview={handleRequestReview}
-              onContinue={handleContinue}
-              breadcrumb={stageTitle}
-            />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<div className="min-h-screen bg-[var(--bg)]" />}>
+              <FeedbackLayout
+                submission={feedbackState.submission}
+                audioTranscript={feedbackState.audioTranscript}
+                audioDuration={feedbackState.audioDuration}
+                isSpoken={feedbackState.isSpoken}
+                contentCategories={feedbackState.contentCategories}
+                acousticMetrics={feedbackState.acousticMetrics}
+                overallText={feedbackState.overallText}
+                onRequestReview={handleRequestReview}
+                onContinue={handleContinue}
+                breadcrumb={stageTitle}
+              />
+            </Suspense>
+          </ErrorBoundary>
         )}
       </SessionLayout>
     </div>
