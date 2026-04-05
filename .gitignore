@@ -25,4 +25,9 @@ dist-ssr
 *.env
 .env
 
+.venv
 .venv/*
+!.venv/bin/*
+!.venv/Scripts/*
+!.venv/Lib/*
+!.venv/pyvenv.cfg
