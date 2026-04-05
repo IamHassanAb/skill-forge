@@ -1,14 +1,19 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 export default function useGroq(systemPrompt) {
   const [isLoading, setIsLoading] = useState(false);
   const [conversationHistory, setConversationHistory] = useState([]);
+  const abortControllerRef = useRef(null);
 
   // We maintain the identical signature so our React Components don't need changes
   const sendMessage = async (userText, imageBase64 = null, mimeType = null, skipHistory = false) => {
     if (!userText?.trim() && !imageBase64) return null;
 
     setIsLoading(true);
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     const userContent = imageBase64
       ? [
@@ -59,6 +64,7 @@ export default function useGroq(systemPrompt) {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           messages,
           model: "meta-llama/llama-4-scout-17b-16e-instruct",
@@ -76,19 +82,29 @@ export default function useGroq(systemPrompt) {
         setConversationHistory(prev => [...prev, newModelTurn]);
       }
 
-      setIsLoading(false);
       return modelText;
 
     } catch (error) {
+      if (error.name === 'AbortError') {
+        console.warn("useGroq: request aborted");
+        return null;
+      }
       console.error("API Error:", error);
-      setIsLoading(false);
       return null;
+    } finally {
+      clearTimeout(timeoutId);
+      setIsLoading(false);
     }
   };
 
   const resetConversation = () => {
+    abortControllerRef.current?.abort();
     setConversationHistory([]);
   };
+
+  useEffect(() => {
+    return () => abortControllerRef.current?.abort();
+  }, []);
 
   // We export sendMessage, isLoading, and resetConversation identically
   return { sendMessage, isLoading, resetConversation, conversationHistory };
