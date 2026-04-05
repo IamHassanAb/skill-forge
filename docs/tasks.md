@@ -1,266 +1,94 @@
-# Situo Frontend — Refactoring Tasks
+# Content Selection Fix Tasks
 
-Each task below is a self-contained prompt for a coding agent. Execute in priority order. Each task is independent and won't conflict with others.
-
----
-
-## P0 — Critical Hygiene
-
-### Task 1: Fix hardcoded hex colors → CSS variables
-
-- [x] Scan all `.jsx` files in `src/` for hardcoded hex color values used in Tailwind arbitrary value classes (e.g. `bg-[#110D0B]`, `text-[#EDE6DC]`, `border-[#2A1E16]`).
-- [x] Replace each with its corresponding CSS variable form using the project's design tokens defined in `src/index.css`:
-  - `#110D0B` → `var(--bg)`
-  - `#1C1410` → `var(--s1)`
-  - `#241912` → `var(--s2)`
-  - `#2A1E16` → `var(--border)`
-  - `#3D2820` → `var(--border2)`
-  - `#EDE6DC` → `var(--t1)`
-  - `#A89880` → `var(--t2)`
-  - `#8C7060` → `var(--t3)`
-  - `#7A6252` → `var(--t4)`
-- [x] Do **not** replace `#C2624A` (terracotta) or `#C9912A` (amber) — these are fixed brand colors and are fine as-is or via Tailwind token `bg-terracotta` / `text-amber-score`.
-- [x] Verify no visual regressions by running `npm run dev` and checking at least the onboarding, session, and feedback screens.
+Below are the markdown prompts for the AI coding agent to execute the content selection refactor plan, in priority order.
 
 ---
 
-### Task 2: Remove dead code and console.logs from `useGroq.js`
-
-- [x] Open `src/hooks/useGroq.js`.
-- [x] Remove all `console.log(...)` statements (lines containing `"PROCESSED MESSAGES FOR GROQ"` and `"GROQ RESPONSE"`).
-- [x] Remove the unused `updatedHistory` variable (lines 29–31) — it is computed but never read.
-- [x] The `conversationHistory` snapshot update on line 36 and the `sendMessage` return flow must remain untouched.
-- [x] Confirm the hook still exports `{ sendMessage, isLoading, resetConversation, conversationHistory }`.
-
----
-
-### Task 3: Extract `parseGroqJSON` utility
-
-- [x] Create a new file `src/utils/parseGroqJSON.js`.
-- [x] Move the repeated JSON-cleaning logic (strip `` ```json `` fences, trim, `JSON.parse`, catch) into a single exported function:
-  ```js
-  export default function parseGroqJSON(text) {
-    const clean = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-    try { return JSON.parse(clean); }
-    catch { console.error('Failed to parse Groq JSON:', text); return null; }
-  }
-  ```
-- [ ] Replace all inline instances of this pattern in:
-  - `src/App.jsx` (`parseFeedbackResponse`, `handleSparkContinue`)
-  - `src/components/onboarding/OnboardingFlow.jsx` (`generateDiagnostic`, `generateStudyPlan`)
-- [ ] Each call site should now do: `const parsed = parseGroqJSON(response);` and then null-check the result.
-- [ ] Do **not** change any component's external API or props.
+## [Task 1] Create Canonical Mapping Base
+**Prompt for Agent:**
+Please create a new file `src/data/focusAreaMap.js`. This file will serve as the single source of truth for focus areas.
+It should export the following:
+1. `CANONICAL_FOCUS_AREAS`: A map where canonical keys point to an object with a label, content tags, and whether it triggers spoken practice (e.g., `clarity_conciseness: { label: "Clarity & conciseness", contentTags: ["Clarity and Simplicity", "Conciseness", "Clarity & Precision", "Conciseness & Brevity", "Clarity", "Active Expression", "Editing Techniques", "Sentence Structure"] }`).
+    - Use the mappings listed below:
+      - `clarity_conciseness`: Label "Clarity & conciseness". Tags: "Clarity and Simplicity", "Conciseness", "Clarity & Precision", "Conciseness & Brevity", "Clarity", "Active Expression", "Editing Techniques", "Sentence Structure".
+      - `active_listening`: Label "Active listening". Tags: "Feedback Loops", "Audience Centricity", "Audience Awareness", "Audience".
+      - `storytelling`: Label "Storytelling". Tags: "Storytelling", "Rhetorical Devices", "Pattern Recognition", "Memorability".
+      - `handling_nervousness`: Label "Handling nervousness". Tags: "Anxiety Management", "Arousal Reappraisal", "Confidence", "Preparation", "Performance Optimization", "Opportunity Mindset".
+      - `tone_vocal_variety`: Label "Tone & vocal variety". Tags: "Vocal Delivery", "Voice", "Delivery".
+      - `emotional_intelligence`: Label "Emotional intelligence". Tags: "Emotional Intelligence".
+      - `nonverbal_communication`: Label "Nonverbal communication". Tags: "Non-verbal Communication".
+2. `contentTagToCanonical(tag)`: A function that returns the canonical key for a given content tag from the library.
+3. `userLabelToCanonical(label)`: A function that returns the canonical key for a user-facing label (used in onboarding).
+4. `SPOKEN_CANONICAL_KEYS`: An exported array of the canonical keys that should trigger spoken sessions (which should be `['tone_vocal_variety', 'handling_nervousness']`).
 
 ---
 
-## P1 — Developer Experience
-
-### Task 4: Move API base URL to environment variable
-
-- [x] Create or update `.env.example` at the project root to include: `VITE_API_BASE_URL=http://localhost:8000`
-- [x] In `src/hooks/useGroq.js`, replace the hardcoded `'http://localhost:8000/api/chat'` with `` `${import.meta.env.VITE_API_BASE_URL}/api/chat` ``.
-- [x] Search for any other hardcoded `localhost:8000` references in `src/` (e.g. `App.jsx` audio analysis endpoint) and replace them the same way.
-- [x] Add `VITE_API_BASE_URL` to any existing `.env` or `.env.local` file with the default value `http://localhost:8000`.
-- [ ] Verify the app still connects to the backend by running `npm run dev`.
+## [Task 2] Update Onboarding UI
+**Prompt for Agent:**
+Update `src/components/onboarding/StepFocusAreas.jsx` to emit the canonical keys to the parent.
+1. Import `CANONICAL_FOCUS_AREAS` from `src/data/focusAreaMap.js`.
+2. Map over the Object entries of `CANONICAL_FOCUS_AREAS` or recreate the list based on it to render the chips using the user-facing `label`.
+3. The component's local `selected` state should store the canonical keys (e.g. `'clarity_conciseness'`) instead of the labels.
+4. When `onNext` is called, it should pass the array of canonical keys so that the rest of the app stores and uses the canonical format.
 
 ---
 
-### Task 5: Add path aliases to `vite.config.js`
-
-- [x] Open `vite.config.js` and add the following `resolve.alias` configuration:
-  ```js
-  import path from 'path'
-
-  export default defineConfig({
-    plugins: [react()],
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src'),
-        '@components': path.resolve(__dirname, './src/components'),
-        '@hooks': path.resolve(__dirname, './src/hooks'),
-        '@data': path.resolve(__dirname, './src/data'),
-        '@utils': path.resolve(__dirname, './src/utils'),
-      }
-    }
-  })
-  ```
-- [ ] Do **not** update any existing imports yet — this task only configures the aliases so they are available for future code. Migrating existing imports can be done as a follow-up.
+## [Task 3] Update Curriculum Logic
+**Prompt for Agent:**
+Update `src/data/curriculum.js` to rely on the canonical keys.
+1. Import `SPOKEN_CANONICAL_KEYS` from `src/data/focusAreaMap.js`.
+2. Remove the hardcoded `SPOKEN_FOCUS_AREAS` array.
+3. Update `getSessionType` so that it uses the imported `SPOKEN_CANONICAL_KEYS` to determine if a focus area triggers a spoken session. Assume the input `focusAreas` are now canonical keys.
 
 ---
 
-### Task 6: Clean up `tailwind.config.js` (remove unused tokens)
-
-- [x] Open `tailwind.config.js`.
-- [ x] Remove the following color tokens that are not used anywhere in the codebase and conflict with the design system:
-  - `accent: '#c8f135'`
-  - `surface: '#111111'`
-  - `card: '#1a1a1a'`
-  - `border: '#2a2a2a'` (conflicts with the semantic `s-border` token)
-- [x] Before removing each token, grep `src/` to confirm it has zero usages.
-- [x] Keep all `s-*`, `light-*`, `terracotta*`, and `amber-score` tokens.
-- [x] Run `npm run build` to confirm no Tailwind class resolution errors.
-
----
-
-### Task 7: Remove unnecessary `import React` statements
-
-- [x] Scan all `.jsx` files in `src/` for `import React from 'react'` or `import React, { ... } from 'react'`.
-- [x] Since Vite uses `@vitejs/plugin-react` which enables the automatic JSX runtime, the default `React` import is not needed unless `React` is directly referenced in the code (e.g. `React.lazy`, `React.memo`, `React.createElement`).
-- [x] Remove the `React` import where it is not directly used. Keep named imports like `{ useState, useCallback, memo }`.
-- [x] Example: `import React, { useState } from 'react'` → `import { useState } from 'react'`
-- [x] Verify the app still renders by running `npm run dev`.
+## [Task 4] Update Content Logic and Create Index
+**Prompt for Agent:**
+Update `src/data/content.js` to correctly map focus areas and use a pre-computed index for O(1) lookups.
+1. Import `contentTagToCanonical` from `focusAreaMap.js`. Add a `canonicalFocusAreas` array property to each content piece by mapping its existing `focusAreas` array through this function.
+2. Build and export a pre-computed `contentIndex` map. It should group content pieces:
+    - By stage (`byStage`)
+    - By canonical key (`byCanonical`)
+    - By stage AND canonical key (`byStageAndCanonical`, e.g. `'1_clarity_conciseness'`)
+3. Update `getContentForStageAndFocus` or provide a new function to use these canonical keys for filtering.
+4. Add a new function `getNextUnseen(stage, canonicalKeys, seenIds, targetSessionType)` that uses the index to quickly lookup pieces for the given stage and canonical keys. It should:
+    - Filter out IDs that exist in the `seenIds` Set.
+    - Prefer content pieces where `contentLevel` is `'beginner'`.
+    - Act as a soft preference towards the `targetSessionType`. If matches align with the type, prefer them; otherwise fallback to other types.
+    - Handle fallback gracefully (if all matched pieces are seen, ignore seenIds. If no matched pieces, fallback to any in stage).
+    - Return the first valid content piece object.
 
 ---
 
-## P2 — Polish & Accessibility
-
-### Task 8: Move inline keyframes to `tailwind.config.js`
-
-- [x] Search all `.jsx` and `.css` files in `src/` for inline `@keyframes` or inline `style={{ animation: ... }}` definitions.
-- [x] Move any discovered keyframes into the `theme.extend.keyframes` section of `tailwind.config.js` and register corresponding entries in `theme.extend.animation`.
-- [x] Update the components to use the new Tailwind `animate-*` class instead of inline styles.
-- [x] Do not modify keyframes that are already in `tailwind.config.js` (`fadeIn`, `badgePulse`, `typeIndicator`).
-
----
-
-### Task 9: Add `aria-label` to icon buttons and form inputs
-
-- [ ] Search all `.jsx` files in `src/` for `<button>` elements that contain only an icon (e.g. SVG, `<span className="material-symbols-outlined">`, or emoji) and no visible text.
-- [ ] Add a descriptive `aria-label` attribute to each. Examples:
-  - A close button → `aria-label="Close"`
-  - A settings gear icon → `aria-label="Settings"`
-  - A play/stop button → `aria-label="Play recording"` / `aria-label="Stop recording"`
-- [ ] Search for `<textarea>` and `<input>` elements and ensure each has either a visible `<label>` with `htmlFor`, or an `aria-label` attribute.
-- [ ] Do not add `aria-label` to buttons that already have visible text content.
+## [Task 5] Implement useContent Hook
+**Prompt for Agent:**
+Implement the currently empty `src/hooks/useContent.js` to manage seen content logic.
+1. Maintain local state `seenContentIds` (preferably as a React state Set or stored in a ref).
+2. Create and return a `getNextContent(stage, canonicalKeys, targetSessionType)` function that internally calls the logic implemented in component.js step 4, passing the current `seenContentIds`.
+3. Create and return a `markAsSeen(contentId)` function to add an ID to the set.
+4. Create and return a `resetSeen()` function to clear the set when a user restarts or enters a new stage loop.
 
 ---
 
-### Task 10: Add `role="status"` to loading states
-
-- [ ] Search all `.jsx` files in `src/` for loading indicators — look for patterns like `animate-spin`, `animate-pulse`, `animate-bounce`, "Loading", "Generating", or conditional rendering gated by `isLoading`.
-- [ ] Wrap each loading indicator's container element with `role="status"` and `aria-live="polite"`.
-- [ ] If the loading indicator already has these attributes, skip it.
-- [ ] Example: `<div className="animate-spin ...">` → `<div role="status" aria-live="polite" className="animate-spin ...">`
-
----
-
-## P3 — Architecture
-
-### Task 11: Extract `useSession` and `useFeedback` hooks from `App.jsx`
-
-- [x] Open `src/App.jsx` and identify the two logical state groups:
-  1. **Session state**: `sessionState`, `handleSparkContinue`, `handleLearnContinue`, `handleContinue`, `handleGoToPractice`, `buildSidebarStages` and related logic.
-  2. **Feedback state**: `feedbackState`, `parseFeedbackResponse`, `handleWrittenSubmit`, `handleSpokenSubmit`, `handleRequestReview` and related logic.
-- [x] Extract each group into its own custom hook: `src/hooks/useSession.js` and `src/hooks/useFeedback.js`.
-- [x] Each hook should accept the dependencies it needs as arguments (e.g. `useFeedback` needs `sendMessage`, `sessionState`).
-- [x] `App.jsx` should import and call both hooks, passing the returned values to child components exactly as before.
-- [x] Verify the app flow still works: Onboarding → Spark → Learn → Practice → Feedback → Continue.
+## [Task 6] Rewire useSession
+**Prompt for Agent:**
+Update `src/hooks/useSession.js` to remove direct dependence on raw content fetching and instead use the stateful `useContent` hook.
+1. Import and utilize `useContent` inside `useSession`.
+2. In `initSession(data)`, calculate `targetSessionType` (via `getSessionType`) and use `getNextContent` to get the first content piece securely, which will now use canonical keys.
+3. In `handleContinue()`, invoke `markAsSeen(currentContentId)` so the piece just completed won't show again. Then call `getNextContent` to fetch the next unseen piece. Let `getSessionType` decide the practice type, and pass it as a soft preference.
 
 ---
 
-### Task 12: Move AI prompt templates to `src/prompts/`
-
-- [x] Create a new directory `src/prompts/`.
-- [x] Search `src/` for all template literal strings that are sent to `sendMessage(...)` as prompts. These are found in:
-  - `App.jsx` — lesson generation prompt, written feedback prompt, spoken feedback prompt.
-  - `OnboardingFlow.jsx` — diagnostic prompt, study plan prompt.
-- [x] Extract each into a named export function in a relevant file, e.g.:
-  - `src/prompts/lessonPrompts.js` → `export function buildLessonPrompt(content) { ... }`
-  - `src/prompts/feedbackPrompts.js` → `export function buildWrittenFeedbackPrompt(practicePrompt, userResponse) { ... }`
-  - `src/prompts/onboardingPrompts.js` → `export function buildDiagnosticPrompt(text) { ... }`
-- [x] Each function takes the dynamic variables as arguments and returns the full prompt string.
-- [x] Update all call sites to use the new prompt functions.
-- [x] Do **not** change the actual prompt text content — only relocate it.
+## [Task 7] Update Lesson Prompts using Context
+**Prompt for Agent:**
+Update the AI lesson generation to use the context dimension (Professional vs. Social vs. Both).
+1. In `src/prompts/lessonPrompts.js`, update `buildLessonPrompt` to accept a new `context` argument.
+2. If `context` is provided, include it in the prompt instructions to frame the lesson for that particular environment (e.g. framing communication lessons specifically for "Professional" settings).
+3. Ensure that wherever `buildLessonPrompt` is called in the application (like in `useSession.js`), the `state.onboardingData.context` is passed through.
 
 ---
 
-### Task 13: Add `React.lazy` + `Suspense` for screen components
-
-- [x] In `src/App.jsx`, change the static imports of heavy screen components to lazy imports:
-  ```js
-  const FeedbackLayout = lazy(() => import('./components/feedback/FeedbackLayout'))
-  const ReaderPanel = lazy(() => import('./components/reader/ReaderPanel'))
-  const OnboardingFlow = lazy(() => import('./components/onboarding/OnboardingFlow'))
-  ```
-- [x] Wrap the usage of each lazy component in `<Suspense>` with a minimal fallback:
-  ```jsx
-  <Suspense fallback={<div className="min-h-screen bg-[var(--bg)]" />}>
-    <FeedbackLayout ... />
-  </Suspense>
-  ```
-- [x] Keep `SessionLayout`, `Sidebar`, and small leaf components as static imports.
-- [x] Verify that navigating between screens still works without errors.
-
----
-
-### Task 14: Wrap presentational components in `memo`
-
-- [x] Identify pure presentational components that receive stable props and do not manage internal state. Good candidates:
-  - `SparkCard`, `LearnCard`, `Sidebar` stage rows, `FeedbackLayout` sub-cards.
-- [x] Wrap each with `memo`:
-  ```jsx
-  import { memo } from 'react'
-  const SparkCard = memo(function SparkCard({ title, source, ... }) { ... })
-  export default SparkCard
-  ```
-- [x] Do **not** wrap components that receive new object/array/function props on every render — this defeats the purpose of `memo`.
-- [x] Do **not** wrap components that already manage significant internal state (e.g. `WrittenPractice`, `AudioRecorder`).
-
----
-
-## P4 — Resilience & Scale
-
-### Task 15: Add error boundaries around screen sections
-
-- [x] Create a reusable `src/components/shared/ErrorBoundary.jsx` component using a class component (error boundaries require `componentDidCatch`).
-- [x] The fallback UI should show a styled card with the message "Something went wrong" and a "Try again" button that calls `this.setState({ hasError: false })`.
-- [x] Style the fallback using the project's design tokens (`var(--bg)`, `var(--s1)`, `var(--t1)`, `terracotta`).
-- [x] Wrap the following sections in `App.jsx` with `<ErrorBoundary>`:
-  - The onboarding screen
-  - The session content area
-  - The feedback screen
-- [x] Verify that throwing an error inside a wrapped component shows the fallback instead of a white screen.
-
----
-
-### Task 16: Add `AbortController` to `useGroq`
-
-- [x] Open `src/hooks/useGroq.js`.
-- [x] Create an `AbortController` inside `sendMessage` before the `fetch` call.
-- [x] Pass `signal: controller.signal` to the `fetch` options.
-- [x] Add a 15-second timeout using `setTimeout(() => controller.abort(), 15000)`.
-- [x] In the `catch` block, check for `error.name === 'AbortError'` and return a distinct error or null.
-- [x] Clear the timeout in a `finally` block.
-- [ ] Optionally, store the controller in a `useRef` so that calling `resetConversation` or unmounting also aborts any in-flight request.
-
----
-
-### Task 17: Refactor `App.jsx` state to `useReducer`
-
-- [x] Open `src/App.jsx` and identify all `useState` calls: `screen`, `onboardingData`, `sessionState`, `feedbackState`, `isReaderOpen`, `confidenceLevel`.
-- [x] Define a reducer function that manages all of these as a single state object with typed actions:
-  ```js
-  const initialState = {
-    screen: 'onboarding',
-    onboardingData: null,
-    session: { ... },
-    feedback: { ... },
-    isReaderOpen: false,
-    confidenceLevel: 'Low'
-  }
-
-  function appReducer(state, action) {
-    switch (action.type) {
-      case 'ONBOARDING_COMPLETE': ...
-      case 'SET_SCREEN': ...
-      case 'UPDATE_SESSION': ...
-      case 'SET_FEEDBACK': ...
-      case 'TOGGLE_READER': ...
-      case 'SET_CONFIDENCE': ...
-      default: return state
-    }
-  }
-  ```
-- [x] Replace all `useState` + `setX` calls with `dispatch({ type: '...', payload: ... })`.
-- [x] Keep `useGroq` as a separate hook — it manages its own internal state.
-- [x] Verify all screen transitions and state updates still work correctly.
+## [Task 8] Delete Empty Hook
+**Prompt for Agent:**
+The `useStudyPlan` hook is empty and its functionality is currently handled safely inside `OnboardingFlow.jsx`.
+Please explicitly delete the `src/hooks/useStudyPlan.js` file to prevent future developer confusion.
