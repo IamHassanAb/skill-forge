@@ -23,7 +23,7 @@ const StepBaseline = ({ onNext, onBack }) => {
         </h1>
 
         {/* SUBTEXT */}
-        <p className="font-sans text-[#A89880] text-lg leading-relaxed mb-10">
+        <p className="font-sans text-[var(--t2)] text-lg leading-relaxed mb-10">
           This isn't a test. It's your starting point — a snapshot of where you are today, before any lessons begin.
         </p>
 

@@ -42,7 +42,7 @@ const StepFocusAreas = ({ onNext }) => {
         </h1>
 
         {/* 4. SUBTEXT */}
-        <p className="font-sans text-[#A89880] text-lg leading-relaxed mb-10">
+        <p className="font-sans text-[var(--t2)] text-lg leading-relaxed mb-10">
           Select all that apply. Your study plan will be built around these areas — you can adjust later.
         </p>
 

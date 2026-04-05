@@ -56,7 +56,7 @@ const ReaderPanel = ({ isOpen, source, type, readTime, title, summary, onClose, 
             <span>{readTime}</span>
           </div>
 
-          <div className="font-sans font-light text-[#A89880] text-lg leading-[1.8] space-y-6 max-w-2xl">
+          <div className="font-sans font-light text-[var(--t2)] text-lg leading-[1.8] space-y-6 max-w-2xl">
             {paragraphs.map((para, i) => (
               <p key={i}>{para}</p>
             ))}

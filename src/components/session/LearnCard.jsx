@@ -28,7 +28,7 @@ const LearnCard = ({ lessonText, keyTerms }) => {
         <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-[var(--t3)] flex-shrink-0">
           LEARN
         </span>
-        <div className="h-px flex-1 bg-[#2A1E16]" />
+        <div className="h-px flex-1 bg-[var(--border)]" />
       </div>
 
       {/* BODY */}

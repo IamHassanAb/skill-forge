@@ -37,7 +37,7 @@ const StepContext = ({ onNext, onBack }) => {
         </h1>
 
         {/* SUBTEXT */}
-        <p className="font-sans text-[#A89880] text-lg leading-relaxed mb-10">
+        <p className="font-sans text-[var(--t2)] text-lg leading-relaxed mb-10">
           This shapes the tone and context of your lessons and practice prompts.
         </p>
 
@@ -75,7 +75,7 @@ const StepContext = ({ onNext, onBack }) => {
                 {/* Text */}
                 <div>
                   <div className="font-serif text-2xl text-[var(--t1)] mb-1">{option.title}</div>
-                  <div className="text-[#A89880] text-sm leading-snug">{option.desc}</div>
+                  <div className="text-[var(--t2)] text-sm leading-snug">{option.desc}</div>
                 </div>
               </button>
             );

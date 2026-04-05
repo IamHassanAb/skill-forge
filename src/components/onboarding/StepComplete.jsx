@@ -26,7 +26,7 @@ const StepComplete = ({ stages, focusAreas, context, onBegin }) => {
           </h1>
 
           {/* SUBTEXT */}
-          <p className="font-sans text-[#A89880] text-lg leading-relaxed text-center max-w-lg mb-8">
+          <p className="font-sans text-[var(--t2)] text-lg leading-relaxed text-center max-w-lg mb-8">
             Based on your focus areas, Situo has built a personalised 5-stage study plan. Your first spark is waiting.
           </p>
 
@@ -76,7 +76,7 @@ const StepComplete = ({ stages, focusAreas, context, onBegin }) => {
                       className={`font-sans ${
                         isFirst
                           ? 'text-terracotta font-semibold'
-                          : 'text-[#A89880]'
+                          : 'text-[var(--t2)]'
                       }`}
                     >
                       {stage.title}

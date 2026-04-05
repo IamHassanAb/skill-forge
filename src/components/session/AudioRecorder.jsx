@@ -278,7 +278,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
                     step="0.001"
                     value={playbackDuration ? playbackTime / playbackDuration : 0}
                     onChange={handleScrub}
-                    className="w-full h-1 appearance-none bg-[#3D2820] rounded cursor-pointer accent-terracotta"
+                    className="w-full h-1 appearance-none bg-[var(--border2)] rounded cursor-pointer accent-terracotta"
                   />
                 </div>
               </div>
@@ -294,7 +294,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
             </div>
 
             {/* Transcript preview */}
-            <div className="w-full bg-[#2A1E16] rounded-lg p-4">
+            <div className="w-full bg-[var(--border)] rounded-lg p-4">
               <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-[var(--t3)] mb-2">
                 TRANSCRIPT PREVIEW
               </div>
