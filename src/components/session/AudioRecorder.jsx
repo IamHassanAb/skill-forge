@@ -212,10 +212,10 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
               {Array.from({ length: WAVE_BAR_COUNT }).map((_, i) => (
                 <div
                   key={i}
-                  className="w-1 rounded-full bg-terracotta"
+                  className="w-1 rounded-full bg-terracotta animate-wave-bar"
                   style={{
                     opacity: 0.6 + Math.random() * 0.4,
-                    animation: `waveBar 0.8s ease-in-out ${i * 0.08}s infinite alternate`,
+                    animationDelay: `${i * 0.08}s`,
                   }}
                 />
               ))}
@@ -225,13 +225,6 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
               Tap to stop · {formatTime(remaining)} remaining
             </span>
 
-            {/* Inline keyframes for wave bars */}
-            <style>{`
-              @keyframes waveBar {
-                0% { height: 8px; }
-                100% { height: 32px; }
-              }
-            `}</style>
           </div>
         )}
 

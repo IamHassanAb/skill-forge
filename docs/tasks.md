@@ -116,10 +116,10 @@ Each task below is a self-contained prompt for a coding agent. Execute in priori
 
 ### Task 8: Move inline keyframes to `tailwind.config.js`
 
-- [ ] Search all `.jsx` and `.css` files in `src/` for inline `@keyframes` or inline `style={{ animation: ... }}` definitions.
-- [ ] Move any discovered keyframes into the `theme.extend.keyframes` section of `tailwind.config.js` and register corresponding entries in `theme.extend.animation`.
-- [ ] Update the components to use the new Tailwind `animate-*` class instead of inline styles.
-- [ ] Do not modify keyframes that are already in `tailwind.config.js` (`fadeIn`, `badgePulse`, `typeIndicator`).
+- [x] Search all `.jsx` and `.css` files in `src/` for inline `@keyframes` or inline `style={{ animation: ... }}` definitions.
+- [x] Move any discovered keyframes into the `theme.extend.keyframes` section of `tailwind.config.js` and register corresponding entries in `theme.extend.animation`.
+- [x] Update the components to use the new Tailwind `animate-*` class instead of inline styles.
+- [x] Do not modify keyframes that are already in `tailwind.config.js` (`fadeIn`, `badgePulse`, `typeIndicator`).
 
 ---
 

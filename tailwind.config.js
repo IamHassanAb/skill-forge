@@ -43,12 +43,17 @@ export default {
         typeIndicator: {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.2' },
-        }
+        },
+        waveBar: {
+          '0%': { height: '8px' },
+          '100%': { height: '32px' },
+        },
       },
       animation: {
         fadeIn: 'fadeIn 0.4s ease forwards',
         badgePulse: 'badgePulse 0.4s ease forwards',
         typeIndicator: 'typeIndicator 0.9s ease-in-out infinite',
+        'wave-bar': 'waveBar 0.8s ease-in-out infinite alternate',
       }
     },
   },
