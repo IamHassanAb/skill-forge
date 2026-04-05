@@ -1,5 +1,6 @@
+import { memo } from 'react';
 
-const OverallCard = ({ text, isSpoken }) => {
+const OverallCard = memo(function OverallCard({ text, isSpoken }) {
   return (
     <div className="bg-[var(--s1)] border-l-4 border-terracotta rounded-r-xl p-8">
       <div className="text-[10px] uppercase tracking-[0.13em] text-terracotta font-bold mb-3">
@@ -15,6 +16,6 @@ const OverallCard = ({ text, isSpoken }) => {
       </p>
     </div>
   );
-};
+});
 
 export default OverallCard;

@@ -1,5 +1,6 @@
+import { memo } from 'react';
 
-const ContentFeedback = ({ categories }) => {
+const ContentFeedback = memo(function ContentFeedback({ categories }) {
   return (
     <div className="grid grid-cols-2 gap-3">
       {categories.map((cat) => (
@@ -37,6 +38,6 @@ const ContentFeedback = ({ categories }) => {
       ))}
     </div>
   );
-};
+});
 
 export default ContentFeedback;

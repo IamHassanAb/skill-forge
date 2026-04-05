@@ -1,5 +1,6 @@
+import { memo } from 'react';
 
-const SparkCard = ({ title, source, type, readTime, hookText, onReadFullPiece }) => {
+const SparkCard = memo(function SparkCard({ title, source, type, readTime, hookText, onReadFullPiece }) {
   return (
     <div className="bg-[var(--s1)] border border-[var(--border)] rounded-2xl overflow-hidden">
       {/* HEADER STRIP */}
@@ -42,6 +43,6 @@ const SparkCard = ({ title, source, type, readTime, hookText, onReadFullPiece })
       </div>
     </div>
   );
-};
+});
 
 export default SparkCard;

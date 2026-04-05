@@ -1,3 +1,4 @@
+import { memo } from 'react';
 
 const highlightTerms = (text, keyTerms) => {
   if (!keyTerms || keyTerms.length === 0) return text;
@@ -19,7 +20,7 @@ const highlightTerms = (text, keyTerms) => {
   });
 };
 
-const LearnCard = ({ lessonText, keyTerms }) => {
+const LearnCard = memo(function LearnCard({ lessonText, keyTerms }) {
   return (
     <div className="bg-[var(--s1)] border border-[var(--border)] rounded-2xl p-5">
       {/* HEADER */}
@@ -36,6 +37,6 @@ const LearnCard = ({ lessonText, keyTerms }) => {
       </p>
     </div>
   );
-};
+});
 
 export default LearnCard;

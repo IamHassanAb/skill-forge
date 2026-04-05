@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo, Fragment } from 'react';
 
 const formatTime = (s) => {
   const m = Math.floor(s / 60);
@@ -18,7 +18,7 @@ const Badge = ({ label, variant }) => {
   );
 };
 
-const AcousticMetrics = ({ pace, talkTime, totalTime = 90, fillerWords, pauses }) => {
+const AcousticMetrics = memo(function AcousticMetrics({ pace, talkTime, totalTime = 90, fillerWords, pauses }) {
   const talkPct = Math.round((talkTime / totalTime) * 100);
   const totalFillers = fillerWords.reduce((sum, f) => sum + f.count, 0);
   const pauseCount = pauses.length;
@@ -127,7 +127,7 @@ const AcousticMetrics = ({ pace, talkTime, totalTime = 90, fillerWords, pauses }
         {/* Visual timeline */}
         <div className="flex items-center gap-0.5 h-6 mb-3">
           {pauses.map((p, i) => (
-            <React.Fragment key={i}>
+            <Fragment key={i}>
               {/* Speech segment */}
               <div
                 className="h-full bg-terracotta/20 rounded-sm flex-1 min-w-[20px]"
@@ -141,7 +141,7 @@ const AcousticMetrics = ({ pace, talkTime, totalTime = 90, fillerWords, pauses }
                   {p.duration.toFixed(1)}s
                 </span>
               </div>
-            </React.Fragment>
+            </Fragment>
           ))}
           {/* Trailing speech segment */}
           <div className="h-full bg-terracotta/20 rounded-sm flex-1 min-w-[20px]" />
@@ -152,6 +152,6 @@ const AcousticMetrics = ({ pace, talkTime, totalTime = 90, fillerWords, pauses }
       </div>
     </div>
   );
-};
+});
 
 export default AcousticMetrics;

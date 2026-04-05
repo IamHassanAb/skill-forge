@@ -1,3 +1,4 @@
+import { memo } from 'react';
 
 const DELIVERY_ITEMS = [
   'Tone and vocal variety',
@@ -6,7 +7,7 @@ const DELIVERY_ITEMS = [
   'Nervousness signals',
 ];
 
-const DeliveryNotice = () => {
+const DeliveryNotice = memo(function DeliveryNotice() {
   return (
     <div className="bg-[#C9912A]/5 border border-[#C9912A]/20 rounded-xl p-6">
       {/* Header */}
@@ -33,6 +34,6 @@ const DeliveryNotice = () => {
       </div>
     </div>
   );
-};
+});
 
 export default DeliveryNotice;
