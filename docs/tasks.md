@@ -67,7 +67,7 @@ Each task below is a self-contained prompt for a coding agent. Execute in priori
 
 ### Task 5: Add path aliases to `vite.config.js`
 
-- [ ] Open `vite.config.js` and add the following `resolve.alias` configuration:
+- [x] Open `vite.config.js` and add the following `resolve.alias` configuration:
   ```js
   import path from 'path'
 
