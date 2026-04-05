@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import parseGroqJSON from '../utils/parseGroqJSON';
+import { buildWrittenFeedbackPrompt, buildSpokenFeedbackPrompt } from '../prompts/feedbackPrompts';
 
 const parseFeedbackResponse = (responseText) => {
   const parsed = parseGroqJSON(responseText);
@@ -38,22 +39,7 @@ const useFeedback = ({ sendMessage, sessionState }) => {
 
   const handleWrittenSubmit = useCallback(async (text) => {
     const content = sessionState.currentContent;
-    const prompt = `You are an AI communication coach. Evaluate this practice response for clarity, structure, conciseness, and relevance.
-
-Practice prompt: "${content.practicePrompt}"
-User response: "${text}"
-
-Respond ONLY in raw JSON:
-{
-  "categories": [
-    { "name": "Clarity", "score": 1-5, "note": "..." },
-    { "name": "Structure", "score": 1-5, "note": "..." },
-    { "name": "Conciseness", "score": 1-5, "note": "..." },
-    { "name": "Relevance", "score": 1-5, "note": "..." }
-  ],
-  "overallText": "..."
-}`;
-
+    const prompt = buildWrittenFeedbackPrompt(content.practicePrompt, text);
     const response = await sendMessage(prompt, null, null, true);
     const parsed = parseFeedbackResponse(response || '');
 
@@ -73,22 +59,7 @@ Respond ONLY in raw JSON:
   const handleSpokenSubmit = useCallback(async (audioBlob, transcript) => {
     const content = sessionState.currentContent;
 
-    const feedbackPrompt = `You are an AI communication coach. Evaluate this spoken response transcript for clarity, structure, conciseness, and relevance. Explicitly flag all delivery elements (tone, pace, nervousness, presence) as requiring human review.
-
-Practice prompt: "${content.practicePrompt}"
-User transcript: "${transcript}"
-
-Respond ONLY in raw JSON:
-{
-  "categories": [
-    { "name": "Clarity", "score": 1-5, "note": "..." },
-    { "name": "Structure", "score": 1-5, "note": "..." },
-    { "name": "Conciseness", "score": 1-5, "note": "..." },
-    { "name": "Relevance", "score": 1-5, "note": "..." }
-  ],
-  "overallText": "..."
-}`;
-
+    const feedbackPrompt = buildSpokenFeedbackPrompt(content.practicePrompt, transcript);
     const feedbackResponse = await sendMessage(feedbackPrompt, null, null, true);
     const parsed = parseFeedbackResponse(feedbackResponse || '');
 

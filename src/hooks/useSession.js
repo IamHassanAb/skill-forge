@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { getFirstContentForStage } from '../data/content';
 import { getSessionType } from '../data/curriculum';
 import parseGroqJSON from '../utils/parseGroqJSON';
+import { buildLessonPrompt } from '../prompts/lessonPrompts';
 
 const useSession = ({ sendMessage, onboardingData }) => {
   const [sessionState, setSessionState] = useState({
@@ -34,15 +35,7 @@ const useSession = ({ sendMessage, onboardingData }) => {
 
   const handleSparkContinue = useCallback(async () => {
     const content = sessionState.currentContent;
-    const prompt = `You are a communication coach. Generate a concise 3-5 paragraph lesson connecting this content to the learner's development.
-
-Content: "${content.title}" — ${content.summary}
-Lesson hook: ${content.lessonHook}
-Focus area: ${content.focusAreas.join(', ')}
-
-Respond ONLY in raw JSON, no markdown, no backticks:
-{ "lessonText": "...", "keyTerms": ["term1", "term2", "term3"] }`;
-
+    const prompt = buildLessonPrompt(content);
     const response = await sendMessage(prompt, null, null, true);
     let lessonText = '';
     let keyTerms = [];

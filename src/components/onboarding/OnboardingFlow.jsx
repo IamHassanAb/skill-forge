@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import useGroq from '../../hooks/useGroq';
 import parseGroqJSON from '../../utils/parseGroqJSON';
+import { buildDiagnosticPrompt, buildStudyPlanPrompt } from '../../prompts/onboardingPrompts';
 import StepFocusAreas from './StepFocusAreas';
 import StepContext from './StepContext';
 import StepBaseline from './StepBaseline';
@@ -29,9 +30,7 @@ const OnboardingFlow = ({ onComplete }) => {
   }, [step, apiReady, animReady]);
 
   const generateDiagnostic = async (text) => {
-    const prompt = `Analyse this written response and generate a Situated Performance Fingerprint (SPF). Respond ONLY in raw JSON, no markdown, no backticks: { "strengths": ["..."], "growth_areas": ["..."], "patterns": ["..."], "recommended_focus": ["..."] }
-
-Response: "${text}"`;
+    const prompt = buildDiagnosticPrompt(text);
     const response = await sendMessage(prompt, null, null, true);
     if (response) {
       const parsed = parseGroqJSON(response);
@@ -43,11 +42,7 @@ Response: "${text}"`;
   };
 
   const generateStudyPlan = async (areas, ctx, diagnostics) => {
-    const diagnosticContext = diagnostics
-      ? `\nDiagnostic findings — strengths: ${diagnostics.strengths?.join(', ')}; growth areas: ${diagnostics.growth_areas?.join(', ')}; recommended focus: ${diagnostics.recommended_focus?.join(', ')}. Personalise stage titles and sequencing based on these findings.`
-      : '';
-    const prompt = `Generate a 5-stage communication and public speaking study plan for someone whose focus areas are: ${areas.join(', ')} and context is ${ctx}.${diagnosticContext} Strictly follow the format: Respond ONLY in raw JSON, no markdown, no backticks: { "stages": [{ "id": 1, "title": "...", "description": "..." }] }`;
-
+    const prompt = buildStudyPlanPrompt(areas, ctx, diagnostics);
     const response = await sendMessage(prompt, null, null, true);
     if (response) {
       const parsed = parseGroqJSON(response);
