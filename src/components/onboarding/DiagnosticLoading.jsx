@@ -23,6 +23,8 @@ const DiagnosticLoading = ({ onComplete }) => {
 
   return (
     <div
+      role="status"
+      aria-live="polite"
       className="min-h-screen flex flex-col items-center justify-center gap-12 px-6"
       style={{ backgroundColor: 'var(--bg)' }}
     >

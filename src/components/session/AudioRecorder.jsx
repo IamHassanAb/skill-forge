@@ -296,7 +296,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
                 TRANSCRIPT PREVIEW
               </div>
               {isTranscribing ? (
-                <div className="flex items-center gap-2 text-[var(--t3)] text-sm">
+                <div role="status" aria-live="polite" className="flex items-center gap-2 text-[var(--t3)] text-sm">
                   <div className="w-3 h-3 border-2 border-stone-600 border-t-terracotta rounded-full animate-spin" />
                   Transcribing…
                 </div>
@@ -322,7 +322,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
               >
                 {isLoading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div role="status" aria-live="polite" className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     Submitting…
                   </>
                 ) : (

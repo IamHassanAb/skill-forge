@@ -1,7 +1,7 @@
 
 const StepLoading = () => {
   return (
-    <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center px-4">
+    <div role="status" aria-live="polite" className="min-h-screen bg-[var(--bg)] flex items-center justify-center px-4">
       <div className="w-full max-w-2xl bg-[var(--s2)] rounded-3xl p-8 md:p-12 flex flex-col items-center">
         {/* PROGRESS BARS */}
         <div className="flex gap-2 w-32 mb-14">
