@@ -90,15 +90,15 @@ Each task below is a self-contained prompt for a coding agent. Execute in priori
 
 ### Task 6: Clean up `tailwind.config.js` (remove unused tokens)
 
-- [ ] Open `tailwind.config.js`.
-- [ ] Remove the following color tokens that are not used anywhere in the codebase and conflict with the design system:
+- [x] Open `tailwind.config.js`.
+- [ x] Remove the following color tokens that are not used anywhere in the codebase and conflict with the design system:
   - `accent: '#c8f135'`
   - `surface: '#111111'`
   - `card: '#1a1a1a'`
   - `border: '#2a2a2a'` (conflicts with the semantic `s-border` token)
-- [ ] Before removing each token, grep `src/` to confirm it has zero usages.
-- [ ] Keep all `s-*`, `light-*`, `terracotta*`, and `amber-score` tokens.
-- [ ] Run `npm run build` to confirm no Tailwind class resolution errors.
+- [x] Before removing each token, grep `src/` to confirm it has zero usages.
+- [x] Keep all `s-*`, `light-*`, `terracotta*`, and `amber-score` tokens.
+- [x] Run `npm run build` to confirm no Tailwind class resolution errors.
 
 ---
 
