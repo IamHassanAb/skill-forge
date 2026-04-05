@@ -1,0 +1,6 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "bash 'D:/Situo/skill-forge/.claude/statusline-command.sh'"
+  }
+}

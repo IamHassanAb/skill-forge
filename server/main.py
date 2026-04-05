@@ -13,13 +13,15 @@ load_dotenv(dotenv_path=env_path)
 app = FastAPI()
 
 # Enable CORS for Vite dev server
+# Change this block (Lines 16-22):
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_credentials=True,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"], # Specify exact Vite origins
+    allow_credentials=True, # Now this can stay True
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Initialize Groq client
 # The SDK automatically looks for GROQ_API_KEY if not provided,
