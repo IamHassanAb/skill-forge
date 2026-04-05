@@ -28,7 +28,7 @@ const useSession = ({ sendMessage, onboardingData, sessionState, dispatch }) => 
 
   const handleSparkContinue = useCallback(async () => {
     const content = sessionState.currentContent;
-    const prompt = buildLessonPrompt(content);
+    const prompt = buildLessonPrompt(content, onboardingData?.context);
     const response = await sendMessage(prompt, null, null, true);
     let lessonText = '';
     let keyTerms = [];
