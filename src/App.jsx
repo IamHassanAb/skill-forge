@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react';
+import { useReducer, lazy, Suspense } from 'react';
 import './index.css';
 
 const OnboardingFlow = lazy(() => import('./components/onboarding/OnboardingFlow'));
@@ -18,84 +18,116 @@ import useSession from './hooks/useSession';
 import useFeedback from './hooks/useFeedback';
 import Bomb from './components/shared/Bomb';
 
+const initialState = {
+  screen: 'onboarding',
+  onboardingData: null,
+  session: {
+    currentStage: 1,
+    currentSession: 1,
+    currentContent: null,
+    sessionType: 'written',
+    sessionStep: 'spark',
+    lessonText: '',
+    keyTerms: [],
+  },
+  feedback: {
+    submission: null,
+    audioTranscript: null,
+    audioDuration: null,
+    isSpoken: false,
+    contentCategories: [],
+    acousticMetrics: null,
+    overallText: '',
+  },
+  isReaderOpen: false,
+  confidenceLevel: 'Low',
+};
+
+function appReducer(state, action) {
+  switch (action.type) {
+    case 'ONBOARDING_COMPLETE':
+      return { ...state, onboardingData: action.payload };
+    case 'SET_SCREEN':
+      return { ...state, screen: action.payload };
+    case 'UPDATE_SESSION':
+      return { ...state, session: { ...state.session, ...action.payload } };
+    case 'SET_FEEDBACK':
+      return { ...state, feedback: action.payload };
+    case 'TOGGLE_READER':
+      return { ...state, isReaderOpen: action.payload };
+    case 'SET_CONFIDENCE':
+      return { ...state, confidenceLevel: action.payload };
+    default:
+      return state;
+  }
+}
+
 function App() {
-  // ─── Screen state ───
-  const [screen, setScreen] = useState('onboarding');
-
-  // ─── Onboarding data ───
-  const [onboardingData, setOnboardingData] = useState(null);
-
-  // ─── Reader panel ───
-  const [isReaderOpen, setIsReaderOpen] = useState(false);
-
-  // ─── Confidence ───
-  const [confidenceLevel, setConfidenceLevel] = useState('Low');
+  const [state, dispatch] = useReducer(appReducer, initialState);
 
   // ─── AI ───
   const { sendMessage, isLoading } = useGroq('');
 
   // ─── Session hook ───
   const {
-    sessionState,
     initSession,
     handleGoToPractice,
     handleSparkContinue,
     handleLearnContinue,
     handleContinue: handleContinueSession,
     buildSidebarStages,
-  } = useSession({ sendMessage, onboardingData });
+  } = useSession({ sendMessage, onboardingData: state.onboardingData, sessionState: state.session, dispatch });
 
   // ─── Feedback hook ───
   const {
-    feedbackState,
     handleWrittenSubmit: submitWritten,
     handleSpokenSubmit: submitSpoken,
     handleRequestReview,
-  } = useFeedback({ sendMessage, sessionState });
+  } = useFeedback({ sendMessage, sessionState: state.session, dispatch });
 
   // ═══════════════════════════════════════════
   // SCREEN TRANSITIONS
   // ═══════════════════════════════════════════
 
   const handleOnboardingComplete = (data) => {
-    setOnboardingData(data);
+    dispatch({ type: 'ONBOARDING_COMPLETE', payload: data });
     initSession(data);
-    setScreen('session');
+    dispatch({ type: 'SET_SCREEN', payload: 'session' });
   };
 
   const handleReadFullPiece = () => {
-    setIsReaderOpen(true);
+    dispatch({ type: 'TOGGLE_READER', payload: true });
   };
 
   const handleWrittenSubmit = async (text) => {
     await submitWritten(text);
-    setScreen('feedback');
+    dispatch({ type: 'SET_SCREEN', payload: 'feedback' });
   };
 
   const handleSpokenSubmit = async (audioBlob, transcript) => {
     await submitSpoken(audioBlob, transcript);
-    setScreen('feedback');
+    dispatch({ type: 'SET_SCREEN', payload: 'feedback' });
   };
 
   const handleContinue = () => {
     handleContinueSession();
 
     // Update confidence based on progress
-    const nextSession = sessionState.currentSession + 1;
-    const nextStage = nextSession > 4 ? Math.min(sessionState.currentStage + 1, 5) : sessionState.currentStage;
+    const nextSession = state.session.currentSession + 1;
+    const nextStage = nextSession > 4 ? Math.min(state.session.currentStage + 1, 5) : state.session.currentStage;
     const actualSession = nextSession > 4 ? 1 : nextSession;
     const totalSessions = ((nextStage - 1) * 4) + actualSession;
-    if (totalSessions >= 12) setConfidenceLevel('High');
-    else if (totalSessions >= 5) setConfidenceLevel('Medium');
+    if (totalSessions >= 12) dispatch({ type: 'SET_CONFIDENCE', payload: 'High' });
+    else if (totalSessions >= 5) dispatch({ type: 'SET_CONFIDENCE', payload: 'Medium' });
 
-    setScreen('session');
+    dispatch({ type: 'SET_SCREEN', payload: 'session' });
   };
 
   // ═══════════════════════════════════════════
   // RENDER
   // ═══════════════════════════════════════════
 
-  if (screen === 'onboarding') {
+  if (state.screen === 'onboarding') {
     return (
       <ErrorBoundary>
 
@@ -109,20 +141,20 @@ function App() {
     );
   }
 
-  const { currentContent, sessionStep, sessionType, lessonText, keyTerms } = sessionState;
+  const { currentContent, sessionStep, sessionType, lessonText, keyTerms } = state.session;
 
   const sidebarStages = buildSidebarStages();
-  const stageObj = onboardingData?.stages?.find((s) => s.id === sessionState.currentStage);
-  const stageTitle = stageObj ? `Stage ${stageObj.id}: ${stageObj.title}` : `Stage ${sessionState.currentStage}`;
-  const sessionLabel = screen === 'feedback' ? 'AI Feedback' : `Session ${sessionState.currentSession}`;
+  const stageObj = state.onboardingData?.stages?.find((s) => s.id === state.session.currentStage);
+  const stageTitle = stageObj ? `Stage ${stageObj.id}: ${stageObj.title}` : `Stage ${state.session.currentStage}`;
+  const sessionLabel = state.screen === 'feedback' ? 'AI Feedback' : `Session ${state.session.currentSession}`;
 
   return (
     <div className="h-screen w-full bg-[var(--bg)] text-[var(--t1)]">
       {/* Sidebar */}
       <Sidebar
-        goalTitle={onboardingData?.stages?.[0]?.title || 'Communication Mastery'}
+        goalTitle={state.onboardingData?.stages?.[0]?.title || 'Communication Mastery'}
         stages={sidebarStages}
-        confidenceLevel={confidenceLevel}
+        confidenceLevel={state.confidenceLevel}
         onSettingsClick={() => console.log('Settings clicked')}
       />
 
@@ -130,13 +162,13 @@ function App() {
       {currentContent && (
         <Suspense fallback={<div className="min-h-screen bg-[var(--bg)]" />}>
           <ReaderPanel
-            isOpen={isReaderOpen}
+            isOpen={state.isReaderOpen}
             source={currentContent.source}
             type={currentContent.type}
             readTime={currentContent.readTime}
             title={currentContent.title}
             summary={currentContent.summary}
-            onClose={() => setIsReaderOpen(false)}
+            onClose={() => dispatch({ type: 'TOGGLE_READER', payload: false })}
             onGoToPractice={handleGoToPractice}
           />
         </Suspense>
@@ -144,7 +176,7 @@ function App() {
 
       {/* Main content area */}
       <SessionLayout stageTitle={stageTitle} sessionLabel={sessionLabel}>
-        {screen === 'session' && (
+        {state.screen === 'session' && (
           <ErrorBoundary>
             {/* <Bomb /> */}
             <>
@@ -213,17 +245,17 @@ function App() {
           </ErrorBoundary>
         )}
 
-        {screen === 'feedback' && (
+        {state.screen === 'feedback' && (
           <ErrorBoundary>
             <Suspense fallback={<div className="min-h-screen bg-[var(--bg)]" />}>
               <FeedbackLayout
-                submission={feedbackState.submission}
-                audioTranscript={feedbackState.audioTranscript}
-                audioDuration={feedbackState.audioDuration}
-                isSpoken={feedbackState.isSpoken}
-                contentCategories={feedbackState.contentCategories}
-                acousticMetrics={feedbackState.acousticMetrics}
-                overallText={feedbackState.overallText}
+                submission={state.feedback.submission}
+                audioTranscript={state.feedback.audioTranscript}
+                audioDuration={state.feedback.audioDuration}
+                isSpoken={state.feedback.isSpoken}
+                contentCategories={state.feedback.contentCategories}
+                acousticMetrics={state.feedback.acousticMetrics}
+                overallText={state.feedback.overallText}
                 onRequestReview={handleRequestReview}
                 onContinue={handleContinue}
                 breadcrumb={stageTitle}

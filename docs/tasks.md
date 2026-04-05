@@ -225,20 +225,20 @@ Each task below is a self-contained prompt for a coding agent. Execute in priori
 
 ### Task 16: Add `AbortController` to `useGroq`
 
-- [ ] Open `src/hooks/useGroq.js`.
-- [ ] Create an `AbortController` inside `sendMessage` before the `fetch` call.
-- [ ] Pass `signal: controller.signal` to the `fetch` options.
-- [ ] Add a 15-second timeout using `setTimeout(() => controller.abort(), 15000)`.
-- [ ] In the `catch` block, check for `error.name === 'AbortError'` and return a distinct error or null.
-- [ ] Clear the timeout in a `finally` block.
+- [x] Open `src/hooks/useGroq.js`.
+- [x] Create an `AbortController` inside `sendMessage` before the `fetch` call.
+- [x] Pass `signal: controller.signal` to the `fetch` options.
+- [x] Add a 15-second timeout using `setTimeout(() => controller.abort(), 15000)`.
+- [x] In the `catch` block, check for `error.name === 'AbortError'` and return a distinct error or null.
+- [x] Clear the timeout in a `finally` block.
 - [ ] Optionally, store the controller in a `useRef` so that calling `resetConversation` or unmounting also aborts any in-flight request.
 
 ---
 
 ### Task 17: Refactor `App.jsx` state to `useReducer`
 
-- [ ] Open `src/App.jsx` and identify all `useState` calls: `screen`, `onboardingData`, `sessionState`, `feedbackState`, `isReaderOpen`, `confidenceLevel`.
-- [ ] Define a reducer function that manages all of these as a single state object with typed actions:
+- [x] Open `src/App.jsx` and identify all `useState` calls: `screen`, `onboardingData`, `sessionState`, `feedbackState`, `isReaderOpen`, `confidenceLevel`.
+- [x] Define a reducer function that manages all of these as a single state object with typed actions:
   ```js
   const initialState = {
     screen: 'onboarding',
@@ -261,6 +261,6 @@ Each task below is a self-contained prompt for a coding agent. Execute in priori
     }
   }
   ```
-- [ ] Replace all `useState` + `setX` calls with `dispatch({ type: '...', payload: ... })`.
-- [ ] Keep `useGroq` as a separate hook — it manages its own internal state.
-- [ ] Verify all screen transitions and state updates still work correctly.
+- [x] Replace all `useState` + `setX` calls with `dispatch({ type: '...', payload: ... })`.
+- [x] Keep `useGroq` as a separate hook — it manages its own internal state.
+- [x] Verify all screen transitions and state updates still work correctly.

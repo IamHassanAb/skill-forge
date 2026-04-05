@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import parseGroqJSON from '../utils/parseGroqJSON';
 import { buildWrittenFeedbackPrompt, buildSpokenFeedbackPrompt } from '../prompts/feedbackPrompts';
 
@@ -26,24 +26,14 @@ const parseFeedbackResponse = (responseText) => {
   };
 };
 
-const useFeedback = ({ sendMessage, sessionState }) => {
-  const [feedbackState, setFeedbackState] = useState({
-    submission: null,
-    audioTranscript: null,
-    audioDuration: null,
-    isSpoken: false,
-    contentCategories: [],
-    acousticMetrics: null,
-    overallText: '',
-  });
-
+const useFeedback = ({ sendMessage, sessionState, dispatch }) => {
   const handleWrittenSubmit = useCallback(async (text) => {
     const content = sessionState.currentContent;
     const prompt = buildWrittenFeedbackPrompt(content.practicePrompt, text);
     const response = await sendMessage(prompt, null, null, true);
     const parsed = parseFeedbackResponse(response || '');
 
-    setFeedbackState({
+    dispatch({ type: 'SET_FEEDBACK', payload: {
       submission: text,
       audioTranscript: null,
       audioDuration: null,
@@ -51,10 +41,10 @@ const useFeedback = ({ sendMessage, sessionState }) => {
       contentCategories: parsed.contentCategories,
       acousticMetrics: null,
       overallText: parsed.overallText,
-    });
+    }});
 
     return true;
-  }, [sessionState.currentContent, sendMessage]);
+  }, [sessionState.currentContent, sendMessage, dispatch]);
 
   const handleSpokenSubmit = useCallback(async (audioBlob, transcript) => {
     const content = sessionState.currentContent;
@@ -97,7 +87,7 @@ const useFeedback = ({ sendMessage, sessionState }) => {
       };
     }
 
-    setFeedbackState({
+    dispatch({ type: 'SET_FEEDBACK', payload: {
       submission: null,
       audioTranscript: transcript,
       audioDuration: `${Math.floor(acousticMetrics.talkTime / 60)}:${String(Math.floor(acousticMetrics.talkTime % 60)).padStart(2, '0')}`,
@@ -105,10 +95,10 @@ const useFeedback = ({ sendMessage, sessionState }) => {
       contentCategories: parsed.contentCategories,
       acousticMetrics,
       overallText: parsed.overallText,
-    });
+    }});
 
     return true;
-  }, [sessionState.currentContent, sendMessage]);
+  }, [sessionState.currentContent, sendMessage, dispatch]);
 
   const handleRequestReview = useCallback(() => {
     console.log('[Situo] Human review requested — reviewer system is post-MVP');
@@ -116,7 +106,6 @@ const useFeedback = ({ sendMessage, sessionState }) => {
   }, []);
 
   return {
-    feedbackState,
     handleWrittenSubmit,
     handleSpokenSubmit,
     handleRequestReview,

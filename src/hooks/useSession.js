@@ -1,24 +1,14 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { getFirstContentForStage } from '../data/content';
 import { getSessionType } from '../data/curriculum';
 import parseGroqJSON from '../utils/parseGroqJSON';
 import { buildLessonPrompt } from '../prompts/lessonPrompts';
 
-const useSession = ({ sendMessage, onboardingData }) => {
-  const [sessionState, setSessionState] = useState({
-    currentStage: 1,
-    currentSession: 1,
-    currentContent: null,
-    sessionType: 'written',
-    sessionStep: 'spark',
-    lessonText: '',
-    keyTerms: [],
-  });
-
+const useSession = ({ sendMessage, onboardingData, sessionState, dispatch }) => {
   const initSession = useCallback((data) => {
     const contentPiece = getFirstContentForStage(1, data.focusAreas);
     const sessionType = getSessionType(data.focusAreas, 1);
-    setSessionState({
+    dispatch({ type: 'UPDATE_SESSION', payload: {
       currentStage: 1,
       currentSession: 1,
       currentContent: contentPiece,
@@ -26,12 +16,12 @@ const useSession = ({ sendMessage, onboardingData }) => {
       sessionStep: 'spark',
       lessonText: '',
       keyTerms: [],
-    });
-  }, []);
+    }});
+  }, [dispatch]);
 
   const handleGoToPractice = useCallback(() => {
-    setSessionState((prev) => ({ ...prev, sessionStep: 'practice' }));
-  }, []);
+    dispatch({ type: 'UPDATE_SESSION', payload: { sessionStep: 'practice' } });
+  }, [dispatch]);
 
   const handleSparkContinue = useCallback(async () => {
     const content = sessionState.currentContent;
@@ -50,17 +40,12 @@ const useSession = ({ sendMessage, onboardingData }) => {
       }
     }
 
-    setSessionState((prev) => ({
-      ...prev,
-      sessionStep: 'learn',
-      lessonText,
-      keyTerms,
-    }));
-  }, [sessionState.currentContent, sendMessage]);
+    dispatch({ type: 'UPDATE_SESSION', payload: { sessionStep: 'learn', lessonText, keyTerms } });
+  }, [sessionState.currentContent, sendMessage, dispatch]);
 
   const handleLearnContinue = useCallback(() => {
-    setSessionState((prev) => ({ ...prev, sessionStep: 'practice' }));
-  }, []);
+    dispatch({ type: 'UPDATE_SESSION', payload: { sessionStep: 'practice' } });
+  }, [dispatch]);
 
   const handleContinue = useCallback(() => {
     const nextSession = sessionState.currentSession + 1;
@@ -74,7 +59,7 @@ const useSession = ({ sendMessage, onboardingData }) => {
     const contentPiece = getFirstContentForStage(nextStage, onboardingData.focusAreas);
     const sessionType = getSessionType(onboardingData.focusAreas, nextStage);
 
-    setSessionState({
+    dispatch({ type: 'UPDATE_SESSION', payload: {
       currentStage: nextStage,
       currentSession: actualSession,
       currentContent: contentPiece,
@@ -82,8 +67,8 @@ const useSession = ({ sendMessage, onboardingData }) => {
       sessionStep: 'spark',
       lessonText: '',
       keyTerms: [],
-    });
-  }, [sessionState.currentSession, sessionState.currentStage, onboardingData]);
+    }});
+  }, [sessionState.currentSession, sessionState.currentStage, onboardingData, dispatch]);
 
   const buildSidebarStages = useCallback(() => {
     if (!onboardingData?.stages) return [];
@@ -102,7 +87,6 @@ const useSession = ({ sendMessage, onboardingData }) => {
   }, [onboardingData, sessionState.currentStage, sessionState.currentSession]);
 
   return {
-    sessionState,
     initSession,
     handleGoToPractice,
     handleSparkContinue,
