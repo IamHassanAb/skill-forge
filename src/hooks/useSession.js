@@ -1,13 +1,16 @@
 import { useCallback } from 'react';
-import { getFirstContentForStage } from '../data/content';
 import { getSessionType } from '../data/curriculum';
+import useContent from './useContent';
 import parseGroqJSON from '../utils/parseGroqJSON';
 import { buildLessonPrompt } from '../prompts/lessonPrompts';
 
 const useSession = ({ sendMessage, onboardingData, sessionState, dispatch }) => {
+  const { getNextContent, markAsSeen, resetSeen } = useContent();
+
   const initSession = useCallback((data) => {
-    const contentPiece = getFirstContentForStage(1, data.focusAreas);
+    resetSeen();
     const sessionType = getSessionType(data.focusAreas, 1);
+    const contentPiece = getNextContent(1, data.focusAreas, sessionType);
     dispatch({ type: 'UPDATE_SESSION', payload: {
       currentStage: 1,
       currentSession: 1,
@@ -17,7 +20,7 @@ const useSession = ({ sendMessage, onboardingData, sessionState, dispatch }) => 
       lessonText: '',
       keyTerms: [],
     }});
-  }, [dispatch]);
+  }, [dispatch, getNextContent, resetSeen]);
 
   const handleGoToPractice = useCallback(() => {
     dispatch({ type: 'UPDATE_SESSION', payload: { sessionStep: 'practice' } });
@@ -48,6 +51,10 @@ const useSession = ({ sendMessage, onboardingData, sessionState, dispatch }) => 
   }, [dispatch]);
 
   const handleContinue = useCallback(() => {
+    if (sessionState.currentContent?.id) {
+      markAsSeen(sessionState.currentContent.id);
+    }
+
     const nextSession = sessionState.currentSession + 1;
     let nextStage = sessionState.currentStage;
 
@@ -56,8 +63,8 @@ const useSession = ({ sendMessage, onboardingData, sessionState, dispatch }) => 
     }
 
     const actualSession = nextSession > 4 ? 1 : nextSession;
-    const contentPiece = getFirstContentForStage(nextStage, onboardingData.focusAreas);
     const sessionType = getSessionType(onboardingData.focusAreas, nextStage);
+    const contentPiece = getNextContent(nextStage, onboardingData.focusAreas, sessionType);
 
     dispatch({ type: 'UPDATE_SESSION', payload: {
       currentStage: nextStage,
@@ -68,7 +75,7 @@ const useSession = ({ sendMessage, onboardingData, sessionState, dispatch }) => 
       lessonText: '',
       keyTerms: [],
     }});
-  }, [sessionState.currentSession, sessionState.currentStage, onboardingData, dispatch]);
+  }, [sessionState.currentSession, sessionState.currentStage, sessionState.currentContent, onboardingData, dispatch, markAsSeen, getNextContent]);
 
   const buildSidebarStages = useCallback(() => {
     if (!onboardingData?.stages) return [];
