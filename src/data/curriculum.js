@@ -13,18 +13,15 @@ export const defaultStages = [
 ];
 
 // ─── Focus area → session type mapping ───
-// Per SRS: tone_vocal_variety and handling_nervousness → spoken
-// All other focus areas → written
-
-const SPOKEN_FOCUS_AREAS = ['tone_vocal_variety', 'handling_nervousness'];
+import { SPOKEN_CANONICAL_KEYS } from './focusAreaMap';
 
 /**
  * Determine session type based on focus areas.
  * Mixed focus areas alternate by stage number.
  */
 export const getSessionType = (focusAreas, stageNumber) => {
-  const hasSpoken = focusAreas.some((fa) => SPOKEN_FOCUS_AREAS.includes(fa));
-  const hasWritten = focusAreas.some((fa) => !SPOKEN_FOCUS_AREAS.includes(fa));
+  const hasSpoken = focusAreas.some((fa) => SPOKEN_CANONICAL_KEYS.includes(fa));
+  const hasWritten = focusAreas.some((fa) => !SPOKEN_CANONICAL_KEYS.includes(fa));
 
   if (hasSpoken && hasWritten) {
     return stageNumber % 2 === 0 ? 'spoken' : 'written';
