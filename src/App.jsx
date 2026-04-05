@@ -1,15 +1,16 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import './index.css';
 
-import OnboardingFlow from './components/onboarding/OnboardingFlow';
+const OnboardingFlow = lazy(() => import('./components/onboarding/OnboardingFlow'));
+const ReaderPanel = lazy(() => import('./components/reader/ReaderPanel'));
+const FeedbackLayout = lazy(() => import('./components/feedback/FeedbackLayout'));
+
 import Sidebar from './components/shared/Sidebar';
 import SessionLayout from './components/session/SessionLayout';
 import SparkCard from './components/session/SparkCard';
 import LearnCard from './components/session/LearnCard';
 import WrittenPractice from './components/session/WrittenPractice';
 import AudioRecorder from './components/session/AudioRecorder';
-import ReaderPanel from './components/reader/ReaderPanel';
-import FeedbackLayout from './components/feedback/FeedbackLayout';
 
 import useGroq from './hooks/useGroq';
 import useSession from './hooks/useSession';
@@ -93,7 +94,11 @@ function App() {
   // ═══════════════════════════════════════════
 
   if (screen === 'onboarding') {
-    return <OnboardingFlow onComplete={handleOnboardingComplete} />;
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-[var(--bg)]" />}>
+        <OnboardingFlow onComplete={handleOnboardingComplete} />
+      </Suspense>
+    );
   }
 
   const { currentContent, sessionStep, sessionType, lessonText, keyTerms } = sessionState;
@@ -115,16 +120,18 @@ function App() {
 
       {/* Reader Panel overlay */}
       {currentContent && (
-        <ReaderPanel
-          isOpen={isReaderOpen}
-          source={currentContent.source}
-          type={currentContent.type}
-          readTime={currentContent.readTime}
-          title={currentContent.title}
-          summary={currentContent.summary}
-          onClose={() => setIsReaderOpen(false)}
-          onGoToPractice={handleGoToPractice}
-        />
+        <Suspense fallback={<div className="min-h-screen bg-[var(--bg)]" />}>
+          <ReaderPanel
+            isOpen={isReaderOpen}
+            source={currentContent.source}
+            type={currentContent.type}
+            readTime={currentContent.readTime}
+            title={currentContent.title}
+            summary={currentContent.summary}
+            onClose={() => setIsReaderOpen(false)}
+            onGoToPractice={handleGoToPractice}
+          />
+        </Suspense>
       )}
 
       {/* Main content area */}
@@ -196,18 +203,20 @@ function App() {
         )}
 
         {screen === 'feedback' && (
-          <FeedbackLayout
-            submission={feedbackState.submission}
-            audioTranscript={feedbackState.audioTranscript}
-            audioDuration={feedbackState.audioDuration}
-            isSpoken={feedbackState.isSpoken}
-            contentCategories={feedbackState.contentCategories}
-            acousticMetrics={feedbackState.acousticMetrics}
-            overallText={feedbackState.overallText}
-            onRequestReview={handleRequestReview}
-            onContinue={handleContinue}
-            breadcrumb={stageTitle}
-          />
+          <Suspense fallback={<div className="min-h-screen bg-[var(--bg)]" />}>
+            <FeedbackLayout
+              submission={feedbackState.submission}
+              audioTranscript={feedbackState.audioTranscript}
+              audioDuration={feedbackState.audioDuration}
+              isSpoken={feedbackState.isSpoken}
+              contentCategories={feedbackState.contentCategories}
+              acousticMetrics={feedbackState.acousticMetrics}
+              overallText={feedbackState.overallText}
+              onRequestReview={handleRequestReview}
+              onContinue={handleContinue}
+              breadcrumb={stageTitle}
+            />
+          </Suspense>
         )}
       </SessionLayout>
     </div>
