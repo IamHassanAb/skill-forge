@@ -109,7 +109,7 @@ const DiagnosticResult = ({ diagnostic = {}, onContinue }) => {
             <CardHeader label="Growth Areas" />
             <div className="space-y-2.5">
               {growth_areas.length > 0
-                ? growth_areas.map((item, i) => <CircleItem key={i} text={item} />)
+                ? growth_areas.map((item, i) => <ArrowItem key={i} text={item} />)
                 : <p className="text-stone-600 text-sm italic">None identified yet.</p>
               }
             </div>
@@ -120,7 +120,7 @@ const DiagnosticResult = ({ diagnostic = {}, onContinue }) => {
             <CardHeader label="Patterns We Noticed" />
             <div className="space-y-2.5">
               {patterns.length > 0
-                ? patterns.map((item, i) => <DotItem key={i} text={item} />)
+                ? patterns.map((item, i) => <ArrowItem key={i} text={item} />)
                 : <p className="text-stone-600 text-sm italic">None identified yet.</p>
               }
             </div>
@@ -136,7 +136,7 @@ const DiagnosticResult = ({ diagnostic = {}, onContinue }) => {
             <CardHeader label="Recommended Starting Point" />
             <div className="space-y-2.5">
               {recommended_focus.length > 0
-                ? recommended_focus.map((item, i) => <FilledDotItem key={i} text={item} />)
+                ? recommended_focus.map((item, i) => <ArrowItem key={i} text={item} />)
                 : <p className="text-stone-600 text-sm italic">None identified yet.</p>
               }
             </div>
