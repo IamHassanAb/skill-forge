@@ -26,6 +26,7 @@ const WrittenPractice = ({ prompt, onSubmit, isLoading }) => {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Write your response here…"
+        aria-label="Practice response"
         className="w-full h-48 bg-[var(--s2)] border-none rounded-xl text-[var(--t1)] placeholder:text-[var(--t4)] focus:ring-1 focus:ring-terracotta/20 transition-all p-6 text-base leading-relaxed resize-none outline-none"
       />
 

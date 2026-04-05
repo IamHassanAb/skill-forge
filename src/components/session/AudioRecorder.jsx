@@ -172,6 +172,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
           <div className="flex flex-col items-center">
             <button
               onClick={startRecording}
+              aria-label="Start recording"
               className="w-[72px] h-[72px] rounded-full bg-[var(--s2)] border border-[var(--border2)] flex items-center justify-center hover:border-terracotta transition-all group cursor-pointer mb-6"
             >
               <svg className="w-7 h-7 text-[var(--t3)] group-hover:text-terracotta transition-colors" viewBox="0 0 24 24" fill="currentColor">
@@ -196,6 +197,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
               <div className="absolute w-32 h-32 rounded-full border border-terracotta/40 bg-terracotta/5 animate-pulse" />
               <button
                 onClick={stopRecording}
+                aria-label="Stop recording"
                 className="relative w-20 h-20 rounded-full border-2 border-terracotta bg-terracotta/10 flex items-center justify-center hover:scale-105 transition-all cursor-pointer"
               >
                 <div className="w-4 h-4 bg-terracotta rounded-sm" />
@@ -248,6 +250,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
                 {/* Play button */}
                 <button
                   onClick={togglePlayback}
+                  aria-label={isPlaying ? 'Pause recording' : 'Play recording'}
                   className="w-[34px] h-[34px] rounded-full bg-terracotta flex items-center justify-center flex-shrink-0 cursor-pointer hover:opacity-90 transition-opacity"
                 >
                   {isPlaying ? (
@@ -271,6 +274,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
                     step="0.001"
                     value={playbackDuration ? playbackTime / playbackDuration : 0}
                     onChange={handleScrub}
+                    aria-label="Playback position"
                     className="w-full h-1 appearance-none bg-[var(--border2)] rounded cursor-pointer accent-terracotta"
                   />
                 </div>

@@ -51,6 +51,7 @@ const StepBaseline = ({ onNext, onBack }) => {
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Write freely here…"
+            aria-label="Baseline writing response"
             className="font-serif italic text-xl text-[var(--t1)] bg-transparent border-none resize-none outline-none w-full min-h-[180px] placeholder:text-stone-700 placeholder:italic"
           />
 
