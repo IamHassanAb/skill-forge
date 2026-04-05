@@ -160,51 +160,51 @@ Each task below is a self-contained prompt for a coding agent. Execute in priori
 
 ### Task 12: Move AI prompt templates to `src/prompts/`
 
-- [ ] Create a new directory `src/prompts/`.
-- [ ] Search `src/` for all template literal strings that are sent to `sendMessage(...)` as prompts. These are found in:
+- [x] Create a new directory `src/prompts/`.
+- [x] Search `src/` for all template literal strings that are sent to `sendMessage(...)` as prompts. These are found in:
   - `App.jsx` — lesson generation prompt, written feedback prompt, spoken feedback prompt.
   - `OnboardingFlow.jsx` — diagnostic prompt, study plan prompt.
-- [ ] Extract each into a named export function in a relevant file, e.g.:
+- [x] Extract each into a named export function in a relevant file, e.g.:
   - `src/prompts/lessonPrompts.js` → `export function buildLessonPrompt(content) { ... }`
   - `src/prompts/feedbackPrompts.js` → `export function buildWrittenFeedbackPrompt(practicePrompt, userResponse) { ... }`
   - `src/prompts/onboardingPrompts.js` → `export function buildDiagnosticPrompt(text) { ... }`
-- [ ] Each function takes the dynamic variables as arguments and returns the full prompt string.
-- [ ] Update all call sites to use the new prompt functions.
-- [ ] Do **not** change the actual prompt text content — only relocate it.
+- [x] Each function takes the dynamic variables as arguments and returns the full prompt string.
+- [x] Update all call sites to use the new prompt functions.
+- [x] Do **not** change the actual prompt text content — only relocate it.
 
 ---
 
 ### Task 13: Add `React.lazy` + `Suspense` for screen components
 
-- [ ] In `src/App.jsx`, change the static imports of heavy screen components to lazy imports:
+- [x] In `src/App.jsx`, change the static imports of heavy screen components to lazy imports:
   ```js
   const FeedbackLayout = lazy(() => import('./components/feedback/FeedbackLayout'))
   const ReaderPanel = lazy(() => import('./components/reader/ReaderPanel'))
   const OnboardingFlow = lazy(() => import('./components/onboarding/OnboardingFlow'))
   ```
-- [ ] Wrap the usage of each lazy component in `<Suspense>` with a minimal fallback:
+- [x] Wrap the usage of each lazy component in `<Suspense>` with a minimal fallback:
   ```jsx
   <Suspense fallback={<div className="min-h-screen bg-[var(--bg)]" />}>
     <FeedbackLayout ... />
   </Suspense>
   ```
-- [ ] Keep `SessionLayout`, `Sidebar`, and small leaf components as static imports.
-- [ ] Verify that navigating between screens still works without errors.
+- [x] Keep `SessionLayout`, `Sidebar`, and small leaf components as static imports.
+- [x] Verify that navigating between screens still works without errors.
 
 ---
 
 ### Task 14: Wrap presentational components in `memo`
 
-- [ ] Identify pure presentational components that receive stable props and do not manage internal state. Good candidates:
+- [x] Identify pure presentational components that receive stable props and do not manage internal state. Good candidates:
   - `SparkCard`, `LearnCard`, `Sidebar` stage rows, `FeedbackLayout` sub-cards.
-- [ ] Wrap each with `memo`:
+- [x] Wrap each with `memo`:
   ```jsx
   import { memo } from 'react'
   const SparkCard = memo(function SparkCard({ title, source, ... }) { ... })
   export default SparkCard
   ```
-- [ ] Do **not** wrap components that receive new object/array/function props on every render — this defeats the purpose of `memo`.
-- [ ] Do **not** wrap components that already manage significant internal state (e.g. `WrittenPractice`, `AudioRecorder`).
+- [x] Do **not** wrap components that receive new object/array/function props on every render — this defeats the purpose of `memo`.
+- [x] Do **not** wrap components that already manage significant internal state (e.g. `WrittenPractice`, `AudioRecorder`).
 
 ---
 
