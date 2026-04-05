@@ -1,23 +1,14 @@
 import { useState } from 'react';
-
-const FOCUS_AREAS = [
-  'Clarity & conciseness',
-  'Active listening',
-  'Storytelling',
-  'Handling nervousness',
-  'Tone & vocal variety',
-  'Emotional intelligence',
-  'Nonverbal communication',
-];
+import { CANONICAL_FOCUS_AREAS } from '../../data/focusAreaMap';
 
 const StepFocusAreas = ({ onNext }) => {
   const [selected, setSelected] = useState([]);
 
-  const toggleArea = (area) => {
+  const toggleArea = (key) => {
     setSelected((prev) =>
-      prev.includes(area)
-        ? prev.filter((a) => a !== area)
-        : [...prev, area]
+      prev.includes(key)
+        ? prev.filter((k) => k !== key)
+        : [...prev, key]
     );
   };
 
@@ -48,19 +39,19 @@ const StepFocusAreas = ({ onNext }) => {
 
         {/* 5. CHIP GRID */}
         <div className="flex flex-wrap gap-3 mb-12">
-          {FOCUS_AREAS.map((area) => {
-            const isSelected = selected.includes(area);
+          {Object.entries(CANONICAL_FOCUS_AREAS).map(([key, { label }]) => {
+            const isSelected = selected.includes(key);
             return (
               <button
-                key={area}
-                onClick={() => toggleArea(area)}
+                key={key}
+                onClick={() => toggleArea(key)}
                 className={`px-6 py-3 rounded-full font-sans transition-all cursor-pointer ${
                   isSelected
                     ? 'bg-terracotta text-white font-medium'
                     : 'border border-[#55423e] text-[#dbc1ba] hover:border-terracotta hover:text-[var(--t1)]'
                 }`}
               >
-                {area}
+                {label}
               </button>
             );
           })}
