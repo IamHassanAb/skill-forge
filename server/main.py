@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 from groq import Groq
 
 # Load environment variables from server/.env file
-env_path = os.path.join(os.path.dirname(__file__), '.env')
-load_dotenv(dotenv_path=env_path)
+# env_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv()
 
 app = FastAPI()
 
