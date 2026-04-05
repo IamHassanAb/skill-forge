@@ -14,6 +14,7 @@ import FeedbackLayout from './components/feedback/FeedbackLayout';
 import useGroq from './hooks/useGroq';
 import { getFirstContentForStage } from './data/content';
 import { getSessionType } from './data/curriculum';
+import parseGroqJSON from './utils/parseGroqJSON';
 
 function App() {
   // ─── Screen state ───
@@ -74,10 +75,8 @@ function App() {
   }, [onboardingData, sessionState.currentStage, sessionState.currentSession]);
 
   const parseFeedbackResponse = (responseText) => {
-    // Try to parse structured JSON from AI response
-    try {
-      const cleaned = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-      const parsed = JSON.parse(cleaned);
+    const parsed = parseGroqJSON(responseText);
+    if (parsed) {
       return {
         contentCategories: parsed.categories || [
           { name: 'Clarity', score: parsed.clarity || 3, note: parsed.clarityNote || 'Solid clarity in your response.' },
@@ -87,18 +86,16 @@ function App() {
         ],
         overallText: parsed.overall || parsed.overallText || 'Your response shows promise. Keep practising and building on the concepts from this session.',
       };
-    } catch {
-      // Fallback: generate reasonable defaults
-      return {
-        contentCategories: [
-          { name: 'Clarity', score: 3, note: 'Your ideas came through clearly.' },
-          { name: 'Structure', score: 3, note: 'Good logical flow.' },
-          { name: 'Conciseness', score: 3, note: 'Appropriate length.' },
-          { name: 'Relevance', score: 3, note: 'Stayed on topic.' },
-        ],
-        overallText: responseText.slice(0, 300),
-      };
     }
+    return {
+      contentCategories: [
+        { name: 'Clarity', score: 3, note: 'Your ideas came through clearly.' },
+        { name: 'Structure', score: 3, note: 'Good logical flow.' },
+        { name: 'Conciseness', score: 3, note: 'Appropriate length.' },
+        { name: 'Relevance', score: 3, note: 'Stayed on topic.' },
+      ],
+      overallText: responseText.slice(0, 300),
+    };
   };
 
   // ═══════════════════════════════════════════
@@ -146,12 +143,11 @@ Respond ONLY in raw JSON, no markdown, no backticks:
     let keyTerms = [];
 
     if (response) {
-      try {
-        const cleaned = response.replace(/```json/g, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(cleaned);
+      const parsed = parseGroqJSON(response);
+      if (parsed) {
         lessonText = parsed.lessonText || response;
         keyTerms = parsed.keyTerms || [];
-      } catch {
+      } else {
         lessonText = response;
       }
     }
@@ -323,7 +319,7 @@ Respond ONLY in raw JSON:
   const sessionLabel = screen === 'feedback' ? 'AI Feedback' : `Session ${sessionState.currentSession}`;
 
   return (
-    <div className="h-screen w-full bg-[#110D0B] text-[#EDE6DC]">
+    <div className="h-screen w-full bg-[var(--bg)] text-[var(--t1)]">
       {/* Sidebar */}
       <Sidebar
         goalTitle={onboardingData?.stages?.[0]?.title || 'Communication Mastery'}

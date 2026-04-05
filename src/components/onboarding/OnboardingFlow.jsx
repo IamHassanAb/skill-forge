@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useGroq from '../../hooks/useGroq';
+import parseGroqJSON from '../../utils/parseGroqJSON';
 import StepFocusAreas from './StepFocusAreas';
 import StepContext from './StepContext';
 import StepBaseline from './StepBaseline';
@@ -33,14 +34,9 @@ const OnboardingFlow = ({ onComplete }) => {
 Response: "${text}"`;
     const response = await sendMessage(prompt, null, null, true);
     if (response) {
-      try {
-        const cleaned = response.replace(/```json/g, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(cleaned);
-        if (parsed?.strengths) {
-          setDiagnosticFindings(parsed);
-        }
-      } catch (err) {
-        console.error('Failed to parse diagnostic JSON:', err);
+      const parsed = parseGroqJSON(response);
+      if (parsed?.strengths) {
+        setDiagnosticFindings(parsed);
       }
     }
     setApiReady(true);
@@ -54,14 +50,9 @@ Response: "${text}"`;
 
     const response = await sendMessage(prompt, null, null, true);
     if (response) {
-      try {
-        const cleaned = response.replace(/```json/g, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(cleaned);
-        if (parsed?.stages) {
-          return parsed.stages;
-        }
-      } catch (err) {
-        console.error('Failed to parse study plan JSON:', err);
+      const parsed = parseGroqJSON(response);
+      if (parsed?.stages) {
+        return parsed.stages;
       }
     }
     return null;
