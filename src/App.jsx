@@ -69,8 +69,8 @@ function App() {
         s.id < sessionState.currentStage
           ? 'done'
           : s.id === sessionState.currentStage
-          ? 'active'
-          : 'upcoming',
+            ? 'active'
+            : 'upcoming',
     }));
   }, [onboardingData, sessionState.currentStage, sessionState.currentSession]);
 
@@ -225,7 +225,7 @@ Respond ONLY in raw JSON:
     try {
       const formData = new FormData();
       formData.append('file', audioBlob, 'recording.webm');
-      const res = await fetch('http://localhost:8000/api/analyze-audio', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/analyze-audio`, {
         method: 'POST',
         body: formData,
       });

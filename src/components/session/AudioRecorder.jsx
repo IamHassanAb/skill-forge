@@ -62,7 +62,7 @@ const AudioRecorder = ({ prompt, onSubmit, isLoading }) => {
         try {
           const formData = new FormData();
           formData.append('file', blob, 'recording.webm');
-          const res = await fetch('http://localhost:8000/api/transcribe', {
+          const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/transcribe`, {
             method: 'POST',
             body: formData,
           });

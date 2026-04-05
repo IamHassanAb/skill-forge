@@ -57,10 +57,10 @@ Each task below is a self-contained prompt for a coding agent. Execute in priori
 
 ### Task 4: Move API base URL to environment variable
 
-- [ ] Create or update `.env.example` at the project root to include: `VITE_API_BASE_URL=http://localhost:8000`
-- [ ] In `src/hooks/useGroq.js`, replace the hardcoded `'http://localhost:8000/api/chat'` with `` `${import.meta.env.VITE_API_BASE_URL}/api/chat` ``.
-- [ ] Search for any other hardcoded `localhost:8000` references in `src/` (e.g. `App.jsx` audio analysis endpoint) and replace them the same way.
-- [ ] Add `VITE_API_BASE_URL` to any existing `.env` or `.env.local` file with the default value `http://localhost:8000`.
+- [x] Create or update `.env.example` at the project root to include: `VITE_API_BASE_URL=http://localhost:8000`
+- [x] In `src/hooks/useGroq.js`, replace the hardcoded `'http://localhost:8000/api/chat'` with `` `${import.meta.env.VITE_API_BASE_URL}/api/chat` ``.
+- [x] Search for any other hardcoded `localhost:8000` references in `src/` (e.g. `App.jsx` audio analysis endpoint) and replace them the same way.
+- [x] Add `VITE_API_BASE_URL` to any existing `.env` or `.env.local` file with the default value `http://localhost:8000`.
 - [ ] Verify the app still connects to the backend by running `npm run dev`.
 
 ---
