@@ -148,13 +148,13 @@ Each task below is a self-contained prompt for a coding agent. Execute in priori
 
 ### Task 11: Extract `useSession` and `useFeedback` hooks from `App.jsx`
 
-- [ ] Open `src/App.jsx` and identify the two logical state groups:
+- [x] Open `src/App.jsx` and identify the two logical state groups:
   1. **Session state**: `sessionState`, `handleSparkContinue`, `handleLearnContinue`, `handleContinue`, `handleGoToPractice`, `buildSidebarStages` and related logic.
   2. **Feedback state**: `feedbackState`, `parseFeedbackResponse`, `handleWrittenSubmit`, `handleSpokenSubmit`, `handleRequestReview` and related logic.
-- [ ] Extract each group into its own custom hook: `src/hooks/useSession.js` and `src/hooks/useFeedback.js`.
-- [ ] Each hook should accept the dependencies it needs as arguments (e.g. `useFeedback` needs `sendMessage`, `sessionState`).
-- [ ] `App.jsx` should import and call both hooks, passing the returned values to child components exactly as before.
-- [ ] Verify the app flow still works: Onboarding → Spark → Learn → Practice → Feedback → Continue.
+- [x] Extract each group into its own custom hook: `src/hooks/useSession.js` and `src/hooks/useFeedback.js`.
+- [x] Each hook should accept the dependencies it needs as arguments (e.g. `useFeedback` needs `sendMessage`, `sessionState`).
+- [x] `App.jsx` should import and call both hooks, passing the returned values to child components exactly as before.
+- [x] Verify the app flow still works: Onboarding → Spark → Learn → Practice → Feedback → Continue.
 
 ---
 
