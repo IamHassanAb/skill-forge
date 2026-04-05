@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import useGroq from '../../hooks/useGroq';
 import parseGroqJSON from '../../utils/parseGroqJSON';
 import StepFocusAreas from './StepFocusAreas';

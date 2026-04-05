@@ -1,4 +1,3 @@
-import React from 'react';
 
 /* ─── Helper: section card ─────────────────────────────────────────────────── */
 

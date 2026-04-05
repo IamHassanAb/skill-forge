@@ -1,4 +1,3 @@
-import React from 'react';
 import TopBar from '../shared/TopBar';
 
 const SessionLayout = ({ stageTitle, sessionLabel, children }) => {

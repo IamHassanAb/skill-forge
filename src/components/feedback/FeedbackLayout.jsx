@@ -1,4 +1,3 @@
-import React from 'react';
 import ContentFeedback from './ContentFeedback';
 import AcousticMetrics from './AcousticMetrics';
 import DeliveryNotice from './DeliveryNotice';

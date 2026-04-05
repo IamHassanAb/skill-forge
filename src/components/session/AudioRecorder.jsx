@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 const WAVE_BAR_COUNT = 10;
 const MAX_SECONDS = 90;

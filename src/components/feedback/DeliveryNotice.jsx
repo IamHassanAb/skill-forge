@@ -1,4 +1,3 @@
-import React from 'react';
 
 const DELIVERY_ITEMS = [
   'Tone and vocal variety',

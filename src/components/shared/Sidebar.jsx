@@ -1,4 +1,3 @@
-import React from 'react';
 import ConfidenceBadge from './ConfidenceBadge';
 import { useTheme } from '../../context/ThemeContext';
 

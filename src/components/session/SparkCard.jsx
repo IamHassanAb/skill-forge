@@ -1,4 +1,3 @@
-import React from 'react';
 
 const SparkCard = ({ title, source, type, readTime, hookText, onReadFullPiece }) => {
   return (

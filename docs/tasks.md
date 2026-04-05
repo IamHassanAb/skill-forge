@@ -104,11 +104,11 @@ Each task below is a self-contained prompt for a coding agent. Execute in priori
 
 ### Task 7: Remove unnecessary `import React` statements
 
-- [ ] Scan all `.jsx` files in `src/` for `import React from 'react'` or `import React, { ... } from 'react'`.
-- [ ] Since Vite uses `@vitejs/plugin-react` which enables the automatic JSX runtime, the default `React` import is not needed unless `React` is directly referenced in the code (e.g. `React.lazy`, `React.memo`, `React.createElement`).
-- [ ] Remove the `React` import where it is not directly used. Keep named imports like `{ useState, useCallback, memo }`.
-- [ ] Example: `import React, { useState } from 'react'` → `import { useState } from 'react'`
-- [ ] Verify the app still renders by running `npm run dev`.
+- [x] Scan all `.jsx` files in `src/` for `import React from 'react'` or `import React, { ... } from 'react'`.
+- [x] Since Vite uses `@vitejs/plugin-react` which enables the automatic JSX runtime, the default `React` import is not needed unless `React` is directly referenced in the code (e.g. `React.lazy`, `React.memo`, `React.createElement`).
+- [x] Remove the `React` import where it is not directly used. Keep named imports like `{ useState, useCallback, memo }`.
+- [x] Example: `import React, { useState } from 'react'` → `import { useState } from 'react'`
+- [x] Verify the app still renders by running `npm run dev`.
 
 ---
 

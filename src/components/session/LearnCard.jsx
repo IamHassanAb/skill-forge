@@ -1,4 +1,3 @@
-import React from 'react';
 
 const highlightTerms = (text, keyTerms) => {
   if (!keyTerms || keyTerms.length === 0) return text;

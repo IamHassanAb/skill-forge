@@ -1,4 +1,3 @@
-import React from 'react';
 
 const ReaderPanel = ({ isOpen, source, type, readTime, title, summary, onClose, onGoToPractice }) => {
   const paragraphs = summary

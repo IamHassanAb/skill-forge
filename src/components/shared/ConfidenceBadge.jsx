@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTheme } from '../../context/ThemeContext'; // Import the hook
 
 const ConfidenceBadge = ({ level }) => {

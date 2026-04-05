@@ -1,4 +1,3 @@
-import React from 'react';
 
 const StepComplete = ({ stages, focusAreas, context, onBegin }) => {
   const tags = [...focusAreas, context];
