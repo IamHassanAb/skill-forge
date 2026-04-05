@@ -1,3 +1,5 @@
+import { contentTagToCanonical } from './focusAreaMap';
+
 // ─── Situo Content Library ───
 // Founder-curated content pieces (~30 planned, 5 placeholders for MVP).
 // Each piece maps to focus areas and a study plan stage.
@@ -358,26 +360,96 @@ const content = [
   }
 ];
 
+// Enrich each piece with canonical focus areas (derived from raw tags)
+content.forEach((piece) => {
+  piece.canonicalFocusAreas = piece.focusAreas
+    .map(contentTagToCanonical)
+    .filter(Boolean);
+});
+
 export default content;
 
+// ─── Pre-computed index ───
+export const contentIndex = (() => {
+  const byStage = {};
+  const byCanonical = {};
+  const byStageAndCanonical = {};
+
+  for (const piece of content) {
+    if (!byStage[piece.stage]) byStage[piece.stage] = [];
+    byStage[piece.stage].push(piece);
+
+    for (const key of piece.canonicalFocusAreas) {
+      if (!byCanonical[key]) byCanonical[key] = [];
+      byCanonical[key].push(piece);
+
+      const stageKey = `${piece.stage}_${key}`;
+      if (!byStageAndCanonical[stageKey]) byStageAndCanonical[stageKey] = [];
+      byStageAndCanonical[stageKey].push(piece);
+    }
+  }
+
+  return { byStage, byCanonical, byStageAndCanonical };
+})();
+
 /**
- * Get all content matching a stage and at least one focus area.
+ * Get all content matching a stage and at least one canonical focus area key.
  */
-export const getContentForStageAndFocus = (stage, focusAreas) => {
+export const getContentForStageAndFocus = (stage, canonicalKeys) => {
   return content.filter(
     (c) =>
       c.stage === stage &&
-      c.focusAreas.some((fa) => focusAreas.includes(fa))
+      c.canonicalFocusAreas.some((key) => canonicalKeys.includes(key))
   );
 };
 
 /**
- * Get the first content piece for a stage + focus area combo.
+ * Get the first content piece for a stage + canonical focus area combo.
  * Falls back to any content in that stage, then the first item overall.
  */
-export const getFirstContentForStage = (stage, focusAreas) => {
-  const matches = getContentForStageAndFocus(stage, focusAreas);
+export const getFirstContentForStage = (stage, canonicalKeys) => {
+  const matches = getContentForStageAndFocus(stage, canonicalKeys);
   return matches.length > 0
     ? matches[0]
     : content.find((c) => c.stage === stage) || content[0];
+};
+
+/**
+ * Get the next unseen content piece for a stage + canonical keys combo.
+ * Prefers beginner content and soft-prefers targetSessionType.
+ * Falls back gracefully if all pieces are seen or no matches exist.
+ */
+export const getNextUnseen = (stage, canonicalKeys, seenIds, targetSessionType) => {
+  const score = (piece) => {
+    let s = 0;
+    if (piece.contentLevel === 'beginner') s += 2;
+    if (piece.sessionType === targetSessionType) s += 1;
+    return s;
+  };
+
+  // Gather unique candidates from byStageAndCanonical
+  const dedupe = new Set();
+  const candidates = [];
+  for (const key of canonicalKeys) {
+    for (const piece of contentIndex.byStageAndCanonical[`${stage}_${key}`] || []) {
+      if (!dedupe.has(piece.id)) {
+        dedupe.add(piece.id);
+        candidates.push(piece);
+      }
+    }
+  }
+
+  const sorted = [...candidates].sort((a, b) => score(b) - score(a));
+
+  // Primary: unseen candidates
+  const unseen = sorted.filter((p) => !seenIds.has(p.id));
+  if (unseen.length > 0) return unseen[0];
+
+  // Fallback 1: all matched pieces are seen — cycle from candidates
+  if (sorted.length > 0) return sorted[0];
+
+  // Fallback 2: no matches for stage+canonical — use any piece in stage
+  const stagePieces = [...(contentIndex.byStage[stage] || [])].sort((a, b) => score(b) - score(a));
+  const stageUnseen = stagePieces.filter((p) => !seenIds.has(p.id));
+  return stageUnseen[0] || stagePieces[0] || null;
 };
