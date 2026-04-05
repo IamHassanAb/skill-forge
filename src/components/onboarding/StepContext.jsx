@@ -12,7 +12,7 @@ const CONTEXT_OPTIONS = [
     desc: 'Conversations, networking, community events, social situations',
   },
   {
-    value: 'Both',
+    value: 'Both (Professional & Social)',
     title: 'Both',
     desc: 'I want to grow across all areas of my life',
   },
@@ -49,20 +49,18 @@ const StepContext = ({ onNext, onBack }) => {
               <button
                 key={option.value}
                 onClick={() => setSelected(option.value)}
-                className={`w-full text-left p-6 rounded-xl border cursor-pointer transition-all flex items-start gap-4 ${
-                  isSelected
+                className={`w-full text-left p-6 rounded-xl border cursor-pointer transition-all flex items-start gap-4 ${isSelected
                     ? 'border-terracotta/30 bg-terracotta/5'
                     : 'border-[var(--border2)] bg-[#1f1b18]'
-                }`}
+                  }`}
               >
                 {/* Radio circle */}
                 <div className="flex-shrink-0 mt-1">
                   <div
-                    className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                      isSelected
+                    className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected
                         ? 'border-terracotta bg-terracotta'
                         : 'border-[#55423e]'
-                    }`}
+                      }`}
                   >
                     {isSelected && (
                       <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="currentColor">
