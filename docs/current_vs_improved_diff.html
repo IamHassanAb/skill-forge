@@ -1,0 +1,159 @@
+
+<style>
+  .diff-wrap { padding: 1rem 0 2rem; font-family: var(--font-sans); }
+  .col-heads { display: grid; grid-template-columns: 160px minmax(0,1fr) minmax(0,1fr); gap: 0; margin-bottom: 8px; }
+  .col-head { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .04em; padding: 0 12px; }
+  .col-head.current { color: #A32D2D; }
+  .col-head.improved { color: #085041; }
+  .diff-row { display: grid; grid-template-columns: 160px minmax(0,1fr) minmax(0,1fr); gap: 0; margin-bottom: 4px; align-items: stretch; }
+  .diff-label { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); padding: 10px 12px 10px 0; display: flex; align-items: center; border-right: 0.5px solid var(--color-border-tertiary); }
+  .diff-cell { font-size: 13px; padding: 10px 12px; line-height: 1.45; }
+  .diff-cell.old { background: #FCEBEB; color: #791F1F; border-radius: 0; }
+  .diff-cell.new { background: #E1F5EE; color: #085041; border-radius: 0; }
+  .diff-row:first-of-type .diff-cell.old { border-radius: 6px 0 0 0; }
+  .diff-row:first-of-type .diff-cell.new { border-radius: 0 6px 0 0; }
+  .diff-row:last-of-type .diff-cell.old { border-radius: 0 0 0 6px; }
+  .diff-row:last-of-type .diff-cell.new { border-radius: 0 0 6px 0; }
+  .impact { font-size: 11px; color: var(--color-text-tertiary); margin-top: 3px; }
+  .section-divider { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: .06em; padding: 18px 0 6px; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 6px; }
+  .top3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-top: 20px; }
+  .top3-card { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 14px 16px; }
+  .top3-num { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; }
+  .top3-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+  .top3-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+  .pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+  .pill-red { background: #FCEBEB; color: #A32D2D; }
+  .pill-green { background: #E1F5EE; color: #085041; }
+</style>
+
+<div class="diff-wrap">
+
+  <div class="col-heads">
+    <div class="col-head"></div>
+    <div class="col-head current" style="padding-left:16px">Current</div>
+    <div class="col-head improved" style="padding-left:16px">Improved</div>
+  </div>
+
+  <div class="section-divider">Onboarding</div>
+
+  <div class="diff-row">
+    <div class="diff-label">Philosophy</div>
+    <div class="diff-cell old">Setup flow — "select preferences"<div class="impact">Feels like configuration</div></div>
+    <div class="diff-cell new">Self-discovery — "what do you want to improve?"<div class="impact">Feels personal and relevant</div></div>
+  </div>
+  <div class="diff-row">
+    <div class="diff-label">Baseline prompt</div>
+    <div class="diff-cell old">Just a prompt — slight performance pressure<div class="impact">Feels evaluative</div></div>
+    <div class="diff-cell new">Prompt + reassurance ("don't overthink")<div class="impact">Higher completion, less hesitation</div></div>
+  </div>
+  <div class="diff-row">
+    <div class="diff-label">Processing</div>
+    <div class="diff-cell old">Static loading 4–8s<div class="impact">Dead time</div></div>
+    <div class="diff-cell new">Dynamic "analyzing you…" messages<div class="impact">Anticipation builds</div></div>
+  </div>
+
+  <div class="section-divider">Output after onboarding</div>
+
+  <div class="diff-row">
+    <div class="diff-label">Diagnostic</div>
+    <div class="diff-cell old">Dense full analysis — 4 categories<div class="impact">Feels like a report</div></div>
+    <div class="diff-cell new">2–3 strengths, 1–2 growth areas, 1 insight<div class="impact">"Oh damn, that's me" moment</div></div>
+  </div>
+  <div class="diff-row">
+    <div class="diff-label">Study plan</div>
+    <div class="diff-cell old">Stage 1 → Stage 5 shown upfront<div class="impact">Feels like a curriculum</div></div>
+    <div class="diff-cell new">3–5 milestones, no stage labels<div class="impact">Feels like a path</div></div>
+  </div>
+
+  <div class="section-divider">Session structure</div>
+
+  <div class="diff-row">
+    <div class="diff-label">Flow shape</div>
+    <div class="diff-cell old">Spark → Learn → Practice → Feedback<div class="impact">3-step learning model</div></div>
+    <div class="diff-cell new">Spark → Practice → Feedback → Repeat<div class="impact">2-step action loop</div></div>
+  </div>
+  <div class="diff-row">
+    <div class="diff-label" style="font-weight:600">Learn step</div>
+    <div class="diff-cell old" style="border-left: 3px solid #E24B4A;">3–5 min AI lesson<div class="impact">High cognitive load — biggest drop-off point</div></div>
+    <div class="diff-cell new" style="border-left: 3px solid #1D9E75;">Removed entirely (optional only)<div class="impact">Near-zero friction entering session</div></div>
+  </div>
+  <div class="diff-row">
+    <div class="diff-label" style="font-weight:600">Practice length</div>
+    <div class="diff-cell old" style="border-left: 3px solid #E24B4A;">150–300 words · 60–90 sec speaking<div class="impact">Feels like effort</div></div>
+    <div class="diff-cell new" style="border-left: 3px solid #1D9E75;">60–120 words · 20–40 sec speaking<div class="impact">Can double completion rate</div></div>
+  </div>
+  <div class="diff-row">
+    <div class="diff-label">Practice scope</div>
+    <div class="diff-cell old">Multi-skill prompts, broad responses<div class="impact">Hard to feel improvement</div></div>
+    <div class="diff-cell new">One micro-skill per attempt<div class="impact">Users feel the gain</div></div>
+  </div>
+
+  <div class="section-divider">Feedback + momentum</div>
+
+  <div class="diff-row">
+    <div class="diff-label">AI feedback</div>
+    <div class="diff-cell old">4 categories scored 1–5 with notes<div class="impact">Analytical, slightly heavy</div></div>
+    <div class="diff-cell new">1–2 strengths + 1–2 fixes<div class="impact">Faster understanding → faster retry</div></div>
+  </div>
+  <div class="diff-row">
+    <div class="diff-label" style="font-weight:600">Post-feedback CTA</div>
+    <div class="diff-cell old" style="border-left: 3px solid #E24B4A;">"Continue" — linear progression<div class="impact">Session ends, no loop</div></div>
+    <div class="diff-cell new" style="border-left: 3px solid #1D9E75;">"Try Again" as primary CTA<div class="impact">This is the habit trigger</div></div>
+  </div>
+  <div class="diff-row">
+    <div class="diff-label">Session nature</div>
+    <div class="diff-cell old">One-and-done, completion-focused<div class="impact">Feels like a task</div></div>
+    <div class="diff-cell new">Repeatable loop, iteration-focused<div class="impact">Becomes a practice habit</div></div>
+  </div>
+
+  <div class="section-divider">Spoken sessions</div>
+
+  <div class="diff-row">
+    <div class="diff-label">AI limitation</div>
+    <div class="diff-cell old">"AI can't assess delivery" — strong warning<div class="impact">Undermines trust in the product</div></div>
+    <div class="diff-cell new">"AI helps with words, humans can enhance"<div class="impact">Trust stays intact</div></div>
+  </div>
+  <div class="diff-row">
+    <div class="diff-label">Human review</div>
+    <div class="diff-cell old">Primary CTA — feels required<div class="impact">Creates dependency bottleneck</div></div>
+    <div class="diff-cell new">Tertiary / optional — feels like upgrade<div class="impact">Async, non-interrupting</div></div>
+  </div>
+
+  <div class="section-divider">Progression + end state</div>
+
+  <div class="diff-row">
+    <div class="diff-label">Progression</div>
+    <div class="diff-cell old">Stage 1–5 visible, rigid, system-driven<div class="impact">Feels like school</div></div>
+    <div class="diff-cell new">Milestones lightly shown, adaptive<div class="impact">Less pressure, more flow</div></div>
+  </div>
+  <div class="diff-row">
+    <div class="diff-label">Session type</div>
+    <div class="diff-cell old">System decides, strict alternation<div class="impact">No user autonomy</div></div>
+    <div class="diff-cell new">System suggests, user can override<div class="impact">Higher engagement</div></div>
+  </div>
+  <div class="diff-row">
+    <div class="diff-label">End of plan</div>
+    <div class="diff-cell new" style="grid-column: 2 / 4; background: #E1F5EE; border-radius: 0 0 6px 6px;">Re-test + before/after comparison kept — this part was already strong<div class="impact">No change needed here</div></div>
+  </div>
+
+  <div class="section-divider">The 3 changes that matter most</div>
+
+  <div class="top3">
+    <div class="top3-card">
+      <div class="top3-num">1</div>
+      <div class="top3-title">Remove forced learn step</div>
+      <div class="top3-desc">Biggest single friction source. Cut it entirely — keep it optional.</div>
+    </div>
+    <div class="top3-card">
+      <div class="top3-num">2</div>
+      <div class="top3-title">Cut practice effort in half</div>
+      <div class="top3-desc">150–300 words → 60–120 words. This alone can double completion.</div>
+    </div>
+    <div class="top3-card">
+      <div class="top3-num">3</div>
+      <div class="top3-title">Replace "Continue" with "Try Again"</div>
+      <div class="top3-desc">One word change. Creates the habit loop that drives retention.</div>
+    </div>
+  </div>
+
+</div>

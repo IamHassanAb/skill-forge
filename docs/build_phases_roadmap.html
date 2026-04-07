@@ -1,0 +1,165 @@
+
+<style>
+  .rmap { padding: 1rem 0 2rem; font-family: var(--font-sans); }
+  .phase-row { display: grid; grid-template-columns: 140px minmax(0,1fr); gap: 16px; margin-bottom: 28px; align-items: start; }
+  .phase-pill { border-radius: 8px; padding: 10px 14px; }
+  .phase-label { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .phase-goal { font-size: 11px; line-height: 1.5; }
+  .p1 { background: #EEEDFE; color: #3C3489; }
+  .p1 .phase-goal { color: #534AB7; }
+  .p2 { background: #E1F5EE; color: #085041; }
+  .p2 .phase-goal { color: #0F6E56; }
+  .p3 { background: #FAEEDA; color: #633806; }
+  .p3 .phase-goal { color: #854F0B; }
+  .p4 { background: #F1EFE8; color: #444441; }
+  .p4 .phase-goal { color: #5F5E5A; }
+  .items-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; padding: 8px 12px; border-radius: 6px; line-height: 1.45; }
+  .item-in { background: #E1F5EE; color: #085041; }
+  .item-out { background: #FCEBEB; color: #791F1F; text-decoration: none; }
+  .item-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .dot-in { background: #1D9E75; }
+  .dot-out { background: #E24B4A; }
+  .item-sub { font-size: 11px; margin-top: 2px; opacity: .75; }
+  .divider { height: 0.5px; background: var(--color-border-tertiary); margin: 4px 0 24px; }
+  .metric-row { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; margin-bottom: 28px; }
+  .metric-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+  .metric-q { font-size: 12px; color: var(--color-text-secondary); line-height: 1.4; margin-bottom: 4px; }
+  .metric-tag { font-size: 11px; font-weight: 500; color: #3C3489; background: #EEEDFE; border-radius: 20px; display: inline-block; padding: 2px 8px; }
+  .priority-stack { display: flex; flex-direction: column; gap: 4px; margin-bottom: 28px; }
+  .pstack-row { display: grid; grid-template-columns: 32px minmax(0,1fr); gap: 12px; align-items: center; }
+  .pstack-num { font-size: 18px; font-weight: 500; color: var(--color-text-tertiary); text-align: right; }
+  .pstack-item { background: var(--color-background-secondary); border-radius: 8px; padding: 10px 14px; }
+  .pstack-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .pstack-desc { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+  .pstack-row:first-child .pstack-item { border: 2px solid #7F77DD; }
+  .callout { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 14px 18px; margin-bottom: 28px; }
+  .callout-q { font-size: 12px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .callout-a { font-size: 14px; color: var(--color-text-primary); font-weight: 500; }
+  .section-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: .06em; padding-bottom: 8px; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 12px; }
+</style>
+
+<div class="rmap">
+
+  <div class="callout">
+    <div class="callout-q">The only question that matters right now</div>
+    <div class="callout-a">Will users come back and do a second session?</div>
+  </div>
+
+  <div class="section-label">Phase 1 — MVP</div>
+  <div class="phase-row">
+    <div class="phase-pill p1">
+      <div class="phase-label">Phase 1</div>
+      <div class="phase-goal">Prove repeat usage + next-day return</div>
+    </div>
+    <div class="items-wrap">
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Simplified onboarding — focus areas, context, baseline prompt, light diagnostic<div class="item-sub">Keep it, don't over-polish</div></div></div>
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Lightweight session loop — Spark → Practice → AI feedback → Try Again<div class="item-sub">This is the engine you're testing</div></div></div>
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Short practice: 60–120 words · 20–40 sec speaking</div></div>
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Simple AI feedback — 1 strength + 1 improvement</div></div>
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>"Try Again" as primary CTA<div class="item-sub">The habit trigger — non-negotiable</div></div></div>
+      <div class="item item-out"><span class="item-dot dot-out"></span><div>3–5 min AI lesson — removed<div class="item-sub">Biggest friction source</div></div></div>
+      <div class="item item-out"><span class="item-dot dot-out"></span><div>Human review system — removed<div class="item-sub">Adds ops cost, breaks the loop</div></div></div>
+      <div class="item item-out"><span class="item-dot dot-out"></span><div>Acoustic analysis (AssemblyAI) — removed</div></div>
+      <div class="item item-out"><span class="item-dot dot-out"></span><div>Detailed 1–5 scoring system — removed</div></div>
+      <div class="item item-out"><span class="item-dot dot-out"></span><div>Visible stage system — removed</div></div>
+    </div>
+  </div>
+
+  <div class="section-label">Phase 1 — what you're measuring</div>
+  <div class="metric-row">
+    <div class="metric-card"><div class="metric-q">Do users complete the first session?</div><div class="metric-tag">completion</div></div>
+    <div class="metric-card"><div class="metric-q">Do users click "Try Again"?</div><div class="metric-tag">loop entry</div></div>
+    <div class="metric-card"><div class="metric-q">Do users do 2–3 attempts in one sitting?</div><div class="metric-tag">depth</div></div>
+    <div class="metric-card"><div class="metric-q">Do users return the next day?</div><div class="metric-tag">retention</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">Phase 2 — engagement layer</div>
+  <div class="phase-row">
+    <div class="phase-pill p2">
+      <div class="phase-label">Phase 2</div>
+      <div class="phase-goal">Increase depth + perceived intelligence</div>
+    </div>
+    <div class="items-wrap">
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Smarter feedback — 2–3 insights, slight personalisation</div></div>
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Better Spark content — higher quality, more relevant scenarios</div></div>
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Adaptive difficulty — adjust prompts based on performance</div></div>
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Light milestones — "you're getting better at…"</div></div>
+      <div class="item item-out"><span class="item-dot dot-out"></span><div>Human review — still on hold</div></div>
+      <div class="item item-out"><span class="item-dot dot-out"></span><div>Full analytics dashboards — still on hold</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">Phase 3 — premium / depth</div>
+  <div class="phase-row">
+    <div class="phase-pill p3">
+      <div class="phase-label">Phase 3</div>
+      <div class="phase-goal">Monetisation + serious learners</div>
+    </div>
+    <div class="items-wrap">
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Human review system — now earns its place<div class="item-sub">Users trust the product, want deeper feedback</div></div></div>
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Acoustic analysis — WPM, pauses, filler words<div class="item-sub">Now enhances, doesn't distract</div></div></div>
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Before / after comparison — Stage 5 re-test<div class="item-sub">Already strong, keep as-is</div></div></div>
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Full study plan visibility — for power users</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">Phase 4 — scale</div>
+  <div class="phase-row">
+    <div class="phase-pill p4">
+      <div class="phase-label">Phase 4</div>
+      <div class="phase-goal">Only after retention is proven</div>
+    </div>
+    <div class="items-wrap">
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Advanced personalisation</div></div>
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Goal tracking + streaks</div></div>
+      <div class="item item-in"><span class="item-dot dot-in"></span><div>Social / peer comparison</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">Build priority — exact order</div>
+  <div class="priority-stack">
+    <div class="pstack-row">
+      <div class="pstack-num">1</div>
+      <div class="pstack-item">
+        <div class="pstack-title">Session loop — perfect this first</div>
+        <div class="pstack-desc">Fast, repeatable, feels good. Everything else depends on this working.</div>
+      </div>
+    </div>
+    <div class="pstack-row">
+      <div class="pstack-num">2</div>
+      <div class="pstack-item">
+        <div class="pstack-title">Onboarding → first session transition</div>
+        <div class="pstack-desc">The hook moment. User must take immediate action after diagnostic.</div>
+      </div>
+    </div>
+    <div class="pstack-row">
+      <div class="pstack-num">3</div>
+      <div class="pstack-item">
+        <div class="pstack-title">Feedback quality</div>
+        <div class="pstack-desc">Must make the user want to retry. That's its only job.</div>
+      </div>
+    </div>
+    <div class="pstack-row">
+      <div class="pstack-num">4</div>
+      <div class="pstack-item">
+        <div class="pstack-title">Everything else</div>
+        <div class="pstack-desc">Earned only after 1–3 are proven to work.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-q">The one question to filter every feature decision</div>
+    <div class="callout-a">Does this increase the chance the user does one more attempt? If not — cut it for now.</div>
+  </div>
+
+</div>
